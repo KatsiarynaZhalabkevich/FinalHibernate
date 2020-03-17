@@ -1,41 +1,60 @@
 package by.epam.web.bean;
 
+
+import lombok.Data;
+
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+@Data
 @Entity
-
+@Table(name="user")
 public class User implements Serializable {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
+
     private String name;
+
     private String surname;
+
     private String phone;
+
     private String email;
+    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
+
     private double balance;
+
     private boolean active;
+    @Column(name = "create_time")
     private Date time;
 
-    private List<Note> noteList;
+//    @ManyToMany
+//    @JoinTable(name = "tariff_note",
+//            joinColumns = @JoinColumn(name = "user_id"),
+//            inverseJoinColumns = @JoinColumn(name = "tariff_id"))
+//    private List<Tarif> tarifs = new ArrayList<>(0);
 
-    private String login;//нельзя хранить логин/пароль дольше, чем проходит авторизация
-    private String password; //шифровать пароль
+    private String login;
+
+    private String password;
 
     public User() {
     }
 
-    public User(String name, String surname, String login, String password) {
+    public User(String name, String surname, String phone, String email, String login, String password) {
         this.name = name;
         this.surname = surname;
+        this.phone = phone;
+        this.email = email;
         this.login = login;
         this.password = password;
     }
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -120,17 +139,13 @@ public class User implements Serializable {
         this.balance += balance;
     }
 
-    public List<Note> getNoteList() {
-        return noteList;
-    }
-
-    public void setNoteList(List<Note> noteList) {
-        this.noteList = noteList;
-    }
-
-    public void setUserNote(Note note) {
-        noteList.add(note);
-    }
+//    public List<Tarif> getTarifs() {
+//        return tarifs;
+//    }
+//
+//    public void setTarifs(List<Tarif> tarifList) {
+//        this.tarifs = tarifList;
+//    }
 
     public void setPassword(String password) {
         this.password = password;
@@ -208,6 +223,4 @@ public class User implements Serializable {
         return "User [id=" + id + ", name=" + name + ", surname=" + surname + ", phone=" + phone + ", email=" + email
                 + ", role=" + role + ", balance=" + balance + ", active=" + active + ", login=" + login + "]";
     }
-
-
 }

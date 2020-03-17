@@ -5,20 +5,21 @@ import java.io.Serializable;
 import java.util.Date;
 
 @Entity
-@Table(name = "")
+@Table(name = "tariff_note")
 public class Note implements Serializable {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-    private int tarifId;
+    @Column(name="user_id")
     private int userId;
-    private Date createNote;
+    @Column(name="tariff_id")
+    private int tarifId;
+    @Column(name="create_time")
+    private Date time;
 
     public Note() {
     }
 
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -43,17 +44,17 @@ public class Note implements Serializable {
         this.userId = userId;
     }
 
-    public Date getCreateNote() {
-        return createNote;
+    public Date getTime() {
+        return time;
     }
 
-    public void setCreateNote(Date createNote) {
-        this.createNote = createNote;
+    public void setTime(Date createNote) {
+        this.time = createNote;
     }
 
     @Override
     public String toString() {
-        return "TarifNote [id=" + id + ", tarifId=" + tarifId + ", userId=" + userId + ", createNote=" + createNote
+        return "TarifNote [id=" + id + ", tarifId=" + tarifId + ", userId=" + userId + ", createNote=" + time
                 + "]";
     }
 
@@ -61,7 +62,7 @@ public class Note implements Serializable {
     public int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((createNote == null) ? 0 : createNote.hashCode());
+        result = prime * result + ((time == null) ? 0 : time.hashCode());
         result = prime * result + id;
         result = prime * result + tarifId;
         result = prime * result + userId;
@@ -77,18 +78,16 @@ public class Note implements Serializable {
         if (getClass() != obj.getClass())
             return false;
         Note other = (Note) obj;
-        if (createNote == null) {
-            if (other.createNote != null)
+        if (time == null) {
+            if (other.time != null)
                 return false;
-        } else if (!createNote.equals(other.createNote))
+        } else if (!time.equals(other.time))
             return false;
         if (id != other.id)
             return false;
         if (tarifId != other.tarifId)
             return false;
-        if (userId != other.userId)
-            return false;
-        return true;
+        return userId == other.userId;
     }
 
 }

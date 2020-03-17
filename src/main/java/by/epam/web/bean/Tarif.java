@@ -2,17 +2,24 @@ package by.epam.web.bean;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Entity
-
+@Table(name = "tariff")
 public class Tarif implements Serializable {
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     private String name;
     private double price;
     private int speed;
-    private double discount = 0; //может быть не относится к тарифному плану?
+    private double discount = 0;
     private String description;
+//    @ManyToMany(mappedBy = "User")
+//    private List<User> users = new ArrayList<>(0);
 
     public Tarif() {
     }
@@ -75,6 +82,14 @@ public class Tarif implements Serializable {
     public void setDescription(String description) {
         this.description = description;
     }
+
+//    public List<User> getUsers() {
+//        return users;
+//    }
+//
+//    public void setUsers(List<User> userList) {
+//        this.users = userList;
+//    }
 
     @Override
     public int hashCode() {
