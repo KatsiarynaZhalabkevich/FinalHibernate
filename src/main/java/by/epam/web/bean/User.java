@@ -32,6 +32,8 @@ public class User implements Serializable {
     private boolean active;
     @Column(name = "create_time")
     private Date time;
+    @OneToMany(mappedBy = "user")
+    private List<Note> notes;
 
 //    @ManyToMany
 //    @JoinTable(name = "tariff_note",

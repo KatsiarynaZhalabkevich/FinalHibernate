@@ -18,6 +18,8 @@ public class Tarif implements Serializable {
     private int speed;
     private double discount = 0;
     private String description;
+    @OneToMany(mappedBy = "tariff")
+    private List<Note> notes;
 //    @ManyToMany(mappedBy = "User")
 //    private List<User> users = new ArrayList<>(0);
 
