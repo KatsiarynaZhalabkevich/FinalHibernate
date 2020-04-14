@@ -1,18 +1,26 @@
 package by.epam.web.util;
 
+import org.hibernate.Session;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Persistence;
 
 public class HibernateUtil {
-    private static final EntityManagerFactory factory;
-    static {
-        factory= Persistence.createEntityManagerFactory("by.epam.web");
-    }
-    public static EntityManager getEntityManager(){
+    private static EntityManagerFactory factory = null;
+
+    public static EntityManager getEntityManager() {
+        if (factory == null) {
+            factory = Persistence.createEntityManagerFactory("by.epam.web");
+        }
         return factory.createEntityManager();
     }
-    public static void close(){
+
+    public static Session getSession() {
+        return getEntityManager().unwrap(Session.class);
+    }
+
+    public static void close() {
         factory.close();
     }
 }

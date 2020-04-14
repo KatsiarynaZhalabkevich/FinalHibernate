@@ -7,7 +7,6 @@ import java.io.Serializable;
 import java.util.Date;
 import java.util.List;
 
-
 @EqualsAndHashCode
 @Entity
 @Table(name = "tariff_note")
@@ -49,7 +48,7 @@ public class Note implements Serializable {
 //    public void setTarifId(int tarifId) {
 //        this.tarifId = tarifId;
 //    }
-
+//
 //    public int getUserId() {
 //        return userId;
 //    }
