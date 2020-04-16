@@ -1,6 +1,7 @@
 package by.epam.web.command.impl;
 
 import by.epam.web.bean.Note;
+import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
@@ -42,15 +43,21 @@ public class AddNoteCommand implements Command {
         TarifService tarifService = ServiceProvider.getInstance().getTarifService();
         HttpSession session = request.getSession(); //только зарегистрированный пользователь может добавить себе тариф
         User user = (User) session.getAttribute(USER);
-        int tarifId = Integer.parseInt(request.getParameter(TARIFF_ID));
+        int tarifId = Integer.parseInt(request.getParameter(TARIFF_ID)); //удобнее сразу тариф забирать
 
         String goToPage = JSPPageName.USER_AUTH_PAGE;
 
 
         if (user != null) {
             Note note = new Note();
-            //note.setTarifId(tarifId);
-          //  note.setUserId(user.getId());
+            note.setUser(user);
+            Tarif tarif = null;
+            try {
+                tarif = tarifService.showTarifById(tarifId);
+            } catch (ServiceException e) {
+                e.printStackTrace();
+            }
+            note.setTariff(tarif);
 
             try {
                 if (noteService.addNote(note)) {//добавили в БД

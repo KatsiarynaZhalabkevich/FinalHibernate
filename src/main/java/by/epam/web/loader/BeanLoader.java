@@ -6,6 +6,8 @@ import by.epam.web.util.HibernateUtil;
 
 import javax.persistence.EntityManager;
 import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 public class BeanLoader {
@@ -47,5 +49,6 @@ public class BeanLoader {
         entityManager.persist(tarif);
         entityManager.getTransaction().commit();
         HibernateUtil.close();
+
     }
 }
