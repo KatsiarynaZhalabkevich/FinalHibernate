@@ -80,11 +80,11 @@ public class HibernateTariffDAO implements TarifDAO {
 
     @Override //сделать через предикаты
     public List<UserTarif> getTarifByUserId(int id) throws DAOException {
+
         EntityManager entityManager = HibernateUtil.getEntityManager();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
         CriteriaQuery<UserTarif> criteria = criteriaBuilder.createQuery(UserTarif.class);
         Root<Tarif> tarif = criteria.from(Tarif.class);
-        Root<User> user = criteria.from(User.class);
         Root<Note> note = criteria.from(Note.class);
 // "SELECT mytelecom.tarif.*, mytelecom.tarif_note.create_time,mytelecom.tarif_note.id AS 'noteId'
 // FROM mytelecom.tarif, mytelecom.tarif_note
@@ -96,14 +96,13 @@ public class HibernateTariffDAO implements TarifDAO {
 //        criteria.where(criteriaBuilder.equal(join.get("id"), id));
 //        List<UserTarif> userTarifs = entityManager.createQuery(criteria).getResultList();
 
-        Predicate eq1 = criteriaBuilder.equal(note.get("tarif"), tarif.get("id"));
+        Predicate eq1 = criteriaBuilder.equal(note.get("tariff"), tarif.get("id"));
         Predicate eq2 = criteriaBuilder.equal(note.get("user"), id);
         Predicate and = criteriaBuilder.and(eq1, eq2);
 
-        criteria.multiselect(tarif, note.get("time"), note.get("id"))
+        criteria = criteria.multiselect(tarif, note.get("time"), note.get("id"))
                 .where(and);
         List<UserTarif> userTarifs = entityManager.createQuery(criteria).getResultList();
-        //рассказать про маппинг
         return userTarifs;
     }
 

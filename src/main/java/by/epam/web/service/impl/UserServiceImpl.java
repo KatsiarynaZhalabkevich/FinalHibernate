@@ -12,9 +12,8 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+
 
 
 
@@ -73,35 +72,26 @@ public class UserServiceImpl implements UserService {
         String phone = user.getPhone();
         String email = user.getEmail();
         double balance = user.getBalance();
-//как map передать на страницу????
-        Map<String, String> errorMap = new HashMap();
 
         if (!validator.checkLogin(login)) {
-            errorMap.put("login", "Incorrect login or password format!");
             throw new ServiceException("Incorrect login or password format!");
         }
         if (password != null && !validator.checkPassword(password)) { //если password=null, то мы ничего не обновляли
-            errorMap.put("password", "Incorrect login or password format!");
             throw new ServiceException("Incorrect login or password format!");
         }
         if (!validator.checkName(name)) {
-            errorMap.put("name", "Incorrect name format");
             throw new ServiceException("Incorrect name format");
         }
         if (!validator.checkName(surname)) {
-            errorMap.put("surname", "Incorrect surname format");
             throw new ServiceException("Incorrect surname format");
         }
         if (!validator.checkPhone(phone)) {
-            errorMap.put("phone", "Incorrect phone number format");
             throw new ServiceException("Incorrect phone number format");
         }
         if (!validator.checkEmail(email)) {
-            errorMap.put("email", "Incorrect email format!");
             throw new ServiceException("Incorrect email format!");
         }
         if (balance < 0) {
-            errorMap.put("balance", "Incorrect balance value!");
             throw new ServiceException("Incorrect balance value!");
         }
 //разница между update and sAVe

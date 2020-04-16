@@ -4,6 +4,8 @@ import by.epam.web.bean.User;
 import by.epam.web.dao.DAOException;
 import by.epam.web.dao.UserDAO;
 import by.epam.web.util.HibernateUtil;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.hibernate.Session;
 
 import javax.persistence.EntityManager;
@@ -12,9 +14,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- *  HQL
+ * HQL
  */
 public class HibernateUserDAO implements UserDAO {
+
+    private final static Logger logger = LogManager.getLogger();
+
     @Override //сейчас невозможно проверить, тк записи не уникальны
     //убрать 1 результат
     public User findUserByLogin(String login) throws DAOException {
@@ -28,14 +33,19 @@ public class HibernateUserDAO implements UserDAO {
     @Override
     public boolean addUser(User user) throws DAOException {
         boolean flag = false;
+        logger.info("попали в метод эдд юзер");
         Session session = HibernateUtil.getSession();
         try {
+            logger.info("все ок. готовимся к транзакции");
             session.getTransaction().begin();
             session.persist(user);
             session.getTransaction().commit();
+            logger.info("транзакция прошла. юзер создан");
             flag = true;
         } catch (Exception e) {
+            logger.error("что-то пошло не так. юзер не создан");
             throw new DAOException(e);
+
         }
         return flag;
 
@@ -50,8 +60,10 @@ public class HibernateUserDAO implements UserDAO {
     @Override
     public boolean isLoginExist(String login) throws DAOException {
         Session session = HibernateUtil.getSession();
-        User user = session.find(User.class, login);
-        return user != null;
+        List<User> users = session.createQuery("from User where login= :login")
+                .setParameter("login", login)
+                .getResultList();
+        return users.size() > 0;
 
     }
 
@@ -69,7 +81,7 @@ public class HibernateUserDAO implements UserDAO {
                 "surname = :surname, " +
                 "phone = :phone, " +
                 "email = :email " +
-                "where id = :id")
+                "where id = :id ")
                 .setParameter("name", user.getName())
                 .setParameter("surname", user.getSurname())
                 .setParameter("phone", user.getPhone())
@@ -77,6 +89,7 @@ public class HibernateUserDAO implements UserDAO {
                 .setParameter("id", user.getId())
                 .executeUpdate();
         session.getTransaction().commit();
+        System.out.println("сколько строчек преобразовалось "+count);
         return count == 1;
     }
 

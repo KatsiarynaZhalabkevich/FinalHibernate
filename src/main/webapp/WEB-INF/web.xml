@@ -37,5 +37,44 @@
         <servlet-name>error</servlet-name>
         <url-pattern>/error</url-pattern>
     </servlet-mapping>
-
+    <servlet>
+        <servlet-name>auth</servlet-name>
+        <jsp-file>/WEB-INF/jsp/auth_user.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>auth</servlet-name>
+        <url-pattern>/auth_user</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>Controller</servlet-name>
+        <servlet-class>by.epam.web.controller.Controller</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>Controller</servlet-name>
+        <url-pattern>/controller</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>users</servlet-name>
+        <jsp-file>/WEB-INF/jsp/show_users.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>users</servlet-name>
+        <url-pattern>/users</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>edit</servlet-name>
+        <jsp-file>/WEB-INF/jsp/edit_profile.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>edit</servlet-name>
+        <url-pattern>/edit_profile</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>tariffs_index</servlet-name>
+        <jsp-file>/page/tarif.jsp</jsp-file>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>tariffs_index</servlet-name>
+        <url-pattern>/tariffs_index</url-pattern>
+    </servlet-mapping>
 </web-app>
