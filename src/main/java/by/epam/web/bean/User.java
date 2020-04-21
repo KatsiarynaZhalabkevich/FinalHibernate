@@ -140,17 +140,21 @@ public class User implements Serializable {
     public void setBalance(double balance) {
         this.balance += balance;
     }
-
-//    public List<Tarif> getTarifs() {
-//        return tarifs;
-//    }
-//
-//    public void setTarifs(List<Tarif> tarifList) {
-//        this.tarifs = tarifList;
-//    }
-
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+    //надо ли этот метод или оно автоматически все сделает из-за связей.
+    // Должно автоматически сделать
+    public void setNote(Note note){
+        notes.add(note);
     }
 
     @Override

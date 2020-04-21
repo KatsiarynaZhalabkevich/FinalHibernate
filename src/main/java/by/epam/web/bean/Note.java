@@ -14,11 +14,6 @@ public class Note implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
-//    @Column(name = "user_id")
-//    private int userId;
-
-//    @Column(name = "tariff_id")
-//    private int tarifId;
     @Column(name = "create_time")
     private Date time;
     @ManyToOne
@@ -28,52 +23,39 @@ public class Note implements Serializable {
     @JoinColumn(name="user_id")
     private User user;
 
-
-
     public Note() {
     }
 
     public int getId() {
         return id;
     }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-//    public int getTarifId() {
-//        return tarifId;
-//    }
-//
-//    public void setTarifId(int tarifId) {
-//        this.tarifId = tarifId;
-//    }
-//
-//    public int getUserId() {
-//        return userId;
-//    }
-//
-//    public void setUserId(int userId) {
-//        this.userId = userId;
-//    }
-
     public Date getTime() {
         return time;
     }
 
-    public void setTime(Date createNote) {
-        this.time = createNote;
+    public Tarif getTariff() {
+        return tariff;
+    }
+
+    public void setTariff(Tarif tariff) {
+        this.tariff = tariff;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 
     @Override
     public String toString() {
-        return "TarifNote [id=" + id + "" +
-        //        "/*, tarifId=" + tarifId */
-       // ", userId=" + userId +
-                ", createNote=" + time
-                + "]";
+        return "Note{" +
+                "id=" + id +
+                ", time=" + time +
+                ", tariff=" + tariff +
+                ", user=" + user +
+                '}';
     }
-
-
-
 }

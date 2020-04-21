@@ -1,8 +1,8 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java"
-         errorPage="page/error.jsp" %>
-<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
+         %>
+<%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix='fmt' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib uri="/WEB-INF/tags.tld" prefix="m" %>
+
 
 
 <!DOCTYPE html>
@@ -138,7 +138,7 @@
 <div style="color: orangered" align="center"><c:out value="${sessionScope.errorMessage}"/>
     <c:remove var="errorMessage" scope="session"/></div>
 <br>
-<div class="container"><h3 align="right"><m:date/></h3></div>
+
 
 <div class="jumbotron">
 

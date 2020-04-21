@@ -56,7 +56,7 @@ public class CreateUserCommand implements Command {
         String password1 = request.getParameter(PASS + 1);
         String password2 = request.getParameter(PASS + 2);
 
-//используем юзера на случай, если данные не будут введены полностью
+
         User user = new User();
         user.setLogin(login);
         user.setPassword(password1);
