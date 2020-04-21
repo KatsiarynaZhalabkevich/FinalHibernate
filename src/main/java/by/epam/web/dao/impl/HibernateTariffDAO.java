@@ -77,35 +77,89 @@ public class HibernateTariffDAO implements TarifDAO {
         return count == 1;
 
     }
-
+/*
     @Override //сделать через предикаты
     public List<UserTarif> getTarifByUserId(int id) throws DAOException {
 
         EntityManager entityManager = HibernateUtil.getEntityManager();
         CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
-        CriteriaQuery<UserTarif> criteria = criteriaBuilder.createQuery(UserTarif.class);
+        //  CriteriaQuery<UserTarif> criteria = criteriaBuilder.createQuery(UserTarif.class);
+        CriteriaQuery<Tarif> criteria = criteriaBuilder.createQuery(Tarif.class);
         Root<Tarif> tarif = criteria.from(Tarif.class);
         Root<Note> note = criteria.from(Note.class);
-// "SELECT mytelecom.tarif.*, mytelecom.tarif_note.create_time,mytelecom.tarif_note.id AS 'noteId'
-// FROM mytelecom.tarif, mytelecom.tarif_note
-// WHERE mytelecom.tarif_note.tarif_id=mytelecom.tarif.id
-// AND mytelecom.tarif_note.user_id=?;";
+        Root<User> user = criteria.from(User.class);
+
+//        String sql = "SELECT hiber_telecom.tariff.*, hiber_telecom.tariff_note.create_time,hiber_telecom.tariff_note.id AS 'noteId' " +
+//                "FROM hiber_telecom.tariff, hiber_telecom.tariff_note " +
+//                "WHERE hiber_telecom.tariff_note.tariff_id=hiber_telecom.tariff.id " +
+//                "AND hiber_telecom.tariff_note.user_id= :id";
+//
+//
+//        String sql1 = "SELECT hiber_telecom.tariff.*, hiber_telecom.tariff_note.create_time,hiber_telecom.tariff_note.id AS 'noteId' " +
+//                "FROM hiber_telecom.tariff_note " +
+//                "JOIN hiber_telecom.tariff " +
+//                "ON hiber_telecom.tariff.id = noteId AND hiber_telecom.tariff_note.user_id = :id";
+//
+//        List<UserTarif> userTarifs =  entityManager.createNativeQuery(sql1).setParameter("id", id).getResultList();
+
 
 //        Join<User, Note> join = user.join("notes", JoinType.INNER);
-//        criteria.where(criteriaBuilder.equal(tarif.get("id"), note.get("tarif")));
-//        criteria.where(criteriaBuilder.equal(join.get("id"), id));
+//        criteria.where(criteriaBuilder.equal(tarif.get("id"), note.get("tariff")));
+//        criteria.where(criteriaBuilder.equal(join.get("user"), id));
 //        List<UserTarif> userTarifs = entityManager.createQuery(criteria).getResultList();
 
-        Predicate eq1 = criteriaBuilder.equal(note.get("tariff"), tarif.get("id"));
-        Predicate eq2 = criteriaBuilder.equal(note.get("user"), id);
-        Predicate and = criteriaBuilder.and(eq1, eq2);
 
-        criteria = criteria.multiselect(tarif, note.get("time"), note.get("id"))
-                .where(and);
-        List<UserTarif> userTarifs = entityManager.createQuery(criteria).getResultList();
-        return userTarifs;
+        Predicate eq1 = criteriaBuilder.equal(note.get("tariff"), tarif);
+//        Predicate eq2 = criteriaBuilder.equal(note.get("user").get("id"), id);
+//        Predicate and = criteriaBuilder.and(eq1, eq2);
+//
+//        criteria = criteria.multiselect(tarif, note.get("time"), note.get("id"))
+//                .where(and);
+
+        criteria = criteria.multiselect(tarif).where(eq1);
+        List<Tarif> tarifs = entityManager.createQuery(criteria).getResultList();
+
+        for(Tarif t:tarifs){
+            System.out.println("Tariff PRINT");
+            System.out.println(t);
+        }
+        //  List<UserTarif> userTarifs = entityManager.createQuery(criteria).getResultList();
+        return null;
     }
 
+*/
+@Override
+public List<UserTarif> getTarifByUserId(int id) throws DAOException {
+
+    EntityManager entityManager = HibernateUtil.getEntityManager();
+    CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+    CriteriaQuery<UserTarif> criteria = criteriaBuilder.createQuery(UserTarif.class);
+
+    Root<Tarif> tarif = criteria.from(Tarif.class);
+    Root<Note> note = criteria.from(Note.class);
+    Root<User> user = criteria.from(User.class);
+
+//        String sql = "SELECT hiber_telecom.tariff.*, hiber_telecom.tariff_note.create_time,hiber_telecom.tariff_note.id AS 'noteId' " +
+//                "FROM hiber_telecom.tariff, hiber_telecom.tariff_note " +
+//                "WHERE hiber_telecom.tariff_note.tariff_id=hiber_telecom.tariff.id " +
+//                "AND hiber_telecom.tariff_note.user_id= :id";
+//
+//        List<UserTarif> userTarifs =  entityManager.createNativeQuery(sql1).setParameter("id", id).getResultList();
+
+
+
+    Predicate eq1 = criteriaBuilder.equal(note.get("tariff"), tarif);
+    Predicate eq2 = criteriaBuilder.equal(note.get("user").get("id"), id);
+    Predicate and = criteriaBuilder.and(eq1, eq2);
+
+    criteria.multiselect(tarif, note.get("time"), note.get("id"))
+            .where(and);
+
+
+    List<UserTarif> userTarifs = entityManager.createQuery(criteria).getResultList();
+
+    return userTarifs;
+}
     @Override
     public List<Tarif> getTariffRange(int page, int limit) throws DAOException {
         EntityManager entityManager = HibernateUtil.getEntityManager();

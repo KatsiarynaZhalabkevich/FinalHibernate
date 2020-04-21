@@ -93,8 +93,9 @@ public class PaymentCommand implements Command {
 
     private double paymentToWithdraw(List<UserTarif> userTariffs) {
         double payment = 0;
-        for (UserTarif tarif : userTariffs) {
-            payment -= tarif.getPrice() - tarif.getPrice() * tarif.getDiscount() * 0.01;
+        for (UserTarif t : userTariffs) {
+            payment -= t.getTarif().getPrice()- t.getTarif().getPrice() * t.getTarif().getDiscount() * 0.01;
+
         }
         return payment;
     }
