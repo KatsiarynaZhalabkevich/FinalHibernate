@@ -11,28 +11,33 @@ import java.util.List;
 @Entity
 @Table(name = "tariff_note")
 public class Note implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
-    @Column(name = "create_time")
     private Date time;
-    @ManyToOne
-    @JoinColumn(name = "tariff_id")
     private Tarif tariff;
-    @ManyToOne
-    @JoinColumn(name="user_id")
     private User user;
 
     public Note() {
     }
-
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
+
+
+    public void setId(int id) {
+        this.id = id;
+    }
+    @Column(name = "create_time")
     public Date getTime() {
         return time;
     }
-
+    public void setTime(Date time) {
+        this.time = time;
+    }
+    @ManyToOne
+    @JoinColumn(name = "tariff_id")
     public Tarif getTariff() {
         return tariff;
     }
@@ -40,7 +45,8 @@ public class Note implements Serializable {
     public void setTariff(Tarif tariff) {
         this.tariff = tariff;
     }
-
+    @ManyToOne
+    @JoinColumn(name="user_id")
     public User getUser() {
         return user;
     }

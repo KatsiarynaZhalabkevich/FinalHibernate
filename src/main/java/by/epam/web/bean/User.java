@@ -11,38 +11,22 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name="user")
+@Table(name = "user")
 public class User implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
-
     private String name;
-
     private String surname;
-
     private String phone;
-
     private String email;
-    @Enumerated(EnumType.STRING)
     private Role role = Role.USER;
-
     private double balance;
-
     private boolean active;
-    @Column(name = "create_time")
     private Date time;
-    @OneToMany(mappedBy = "user")
-    private List<Note> notes;
 
-//    @ManyToMany
-//    @JoinTable(name = "tariff_note",
-//            joinColumns = @JoinColumn(name = "user_id"),
-//            inverseJoinColumns = @JoinColumn(name = "tariff_id"))
-//    private List<Tarif> tarifs = new ArrayList<>(0);
+    private List<Note> notesList;
 
     private String login;
-
     private String password;
 
     public User() {
@@ -57,6 +41,8 @@ public class User implements Serializable {
         this.password = password;
     }
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     public int getId() {
         return id;
     }
@@ -65,6 +51,7 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    @Column(name = "create_time")
     public Date getTime() {
         return time;
     }
@@ -113,6 +100,7 @@ public class User implements Serializable {
         this.email = email;
     }
 
+    @Enumerated(EnumType.STRING)
     public Role getRole() {
         return role;
     }
@@ -140,22 +128,20 @@ public class User implements Serializable {
     public void setBalance(double balance) {
         this.balance += balance;
     }
+
     public void setPassword(String password) {
         this.password = password;
     }
 
-    public List<Note> getNotes() {
-        return notes;
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<Note> getNotesList() {
+        return notesList;
     }
 
-    public void setNotes(List<Note> notes) {
-        this.notes = notes;
+    public void setNotesList(List<Note> notesList) {
+        this.notesList = notesList;
     }
-    //надо ли этот метод или оно автоматически все сделает из-за связей.
-    // Должно автоматически сделать
-    public void setNote(Note note){
-        notes.add(note);
-    }
+
 
     @Override
     public int hashCode() {

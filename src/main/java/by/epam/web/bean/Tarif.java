@@ -10,18 +10,16 @@ import java.util.Set;
 @Entity
 @Table(name = "tariff")
 public class Tarif implements Serializable {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+
     private int id;
     private String name;
     private double price;
     private int speed;
     private double discount = 0;
     private String description;
-    @OneToMany(mappedBy = "tariff")
-    private List<Note> notes;
-//    @ManyToMany(mappedBy = "User")
-//    private List<User> users = new ArrayList<>(0);
+
+
+    private List<Note> notes = new ArrayList<>();
 
     public Tarif() {
     }
@@ -85,13 +83,17 @@ public class Tarif implements Serializable {
         this.description = description;
     }
 
-//    public List<User> getUsers() {
-//        return users;
-//    }
-//
-//    public void setUsers(List<User> userList) {
-//        this.users = userList;
-//    }
+
+    @OneToMany(mappedBy = "tariff", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    public List<Note> getNotes() {
+        return notes;
+    }
+
+    public void setNotes(List<Note> notes) {
+        this.notes = notes;
+    }
+
+
 
     @Override
     public int hashCode() {
