@@ -13,6 +13,6 @@ public interface TarifService {
     boolean deleteTarif(int id) throws ServiceException;
     boolean changeTarif(Tarif tarif) throws ServiceException;
     List<UserTarif> showTarifsByUserId(int id) throws ServiceException;
-    List<Tarif> showTariffRange(int page) throws ServiceException;
+    List<Tarif> showTariffRange(int page, int limit) throws ServiceException;
 
 }

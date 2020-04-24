@@ -27,7 +27,7 @@ public class TariffPaginationCommand implements Command {
     private final static String ERROR_MESSAGE_TEXT = "Can't get information about tariffs. Please, try later";
     private static final String PAGE_NUM = "pageNum";
     private static final String IS_LAST_PAGE = "isLastPage";
-    private static final int SIZE =3 ;
+    private static final int LIMIT =3 ;
 
 
     @Override
@@ -49,7 +49,7 @@ public class TariffPaginationCommand implements Command {
         }
 
         try {
-            tarifList = tarifService.showTariffRange((int) page);
+            tarifList = tarifService.showTariffRange((int) page, LIMIT);
         } catch (ServiceException e) {
             logger.error(e);
         }
@@ -57,7 +57,7 @@ public class TariffPaginationCommand implements Command {
 
         if (tarifList != null) {
             session.setAttribute(TARIFFS, tarifList);
-            if (tarifList.size() < SIZE) {
+            if (tarifList.size() < LIMIT) {
                 session.setAttribute(IS_LAST_PAGE, true);
             } else {
                 session.setAttribute(IS_LAST_PAGE, false);

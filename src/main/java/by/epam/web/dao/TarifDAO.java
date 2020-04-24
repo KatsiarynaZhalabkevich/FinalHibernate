@@ -13,6 +13,6 @@ public interface TarifDAO {
     List<Tarif> getAll()throws DAOException;
     boolean deleteTarifById(int id) throws DAOException;
     List<UserTarif>getTarifByUserId(int id) throws DAOException;
-    List<Tarif> getTariffRange(int firstPosition, int limit) throws DAOException;
+    List<Tarif> getTariffRange(int page, int limit) throws DAOException;
 
 }

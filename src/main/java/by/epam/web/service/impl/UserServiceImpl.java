@@ -240,12 +240,10 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<User> getUsersRange(long page) throws ServiceException {
+    public List<User> getUsersRange(long page, int limit) throws ServiceException {
         List<User> users;
         try {
-            int limit = 3;
-            int firstPosition = (int)page * limit-limit;
-            users = userDao.getUsersRange(firstPosition, limit);
+            users = userDao.getUsersRange((int)page, limit);
         } catch (DAOException e) {
             logger.error(e);
             throw new ServiceException("problems with dao");

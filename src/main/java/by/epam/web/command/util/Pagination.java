@@ -16,6 +16,7 @@ public class Pagination {
     private final static String ERROR_MESSAGE_TEXT ="Can't get information about tariffs. Please, try later";
     private final static String PAGE_NUM ="pageNum";
     private final static String IS_LAST_PAGE = "isLastPage";
+    private final static int LIMIT = 3;
 
     public static void makePage(HttpServletRequest request) throws ServiceException {
         TarifService tarifService = new TarifServiceImpl();
@@ -30,10 +31,10 @@ public class Pagination {
             page = 1;
             session.setAttribute(PAGE_NUM, page);
         }
-        tarifList = tarifService.showTariffRange((int) page);
+        tarifList = tarifService.showTariffRange((int) page, LIMIT);
         if (tarifList != null) {
             session.setAttribute(TARIFFS, tarifList);
-            if (tarifList.size() < 3) {
+            if (tarifList.size() < LIMIT) {
                 session.setAttribute(IS_LAST_PAGE, true);
             } else {
                 session.setAttribute(IS_LAST_PAGE, false);

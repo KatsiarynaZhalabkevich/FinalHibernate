@@ -31,20 +31,12 @@ public class BeanLoader {
         TarifService tarifService = ServiceProvider.getInstance().getTarifService();
         TarifDAO tarifDAO = DAOProvider.getInstance().getTarifDAO();
 
-        List<UserTarif> tariffs = tarifDAO.getTarifByUserId(13);
+        List<UserTarif> userTarifs = tarifDAO.getTarifByUserId(13);
 
-        System.out.println("получили лист");
-        System.out.println("size = "+ tariffs.size());
-        for(UserTarif t: tariffs){
-            System.out.println(t);
+        for(UserTarif u:userTarifs){
+            System.out.println("LIST DTO");
+            System.out.println(u);
         }
-
-
-//        User user = new User("Katsiaryna", "Zhalabkevich", "+375296902620", "beluzhka@gmail.com", "login", "user");
-//        EntityManager entityManager= HibernateUtil.getEntityManager();
-//        entityManager.getTransaction().begin();
-//        entityManager.persist(user);
-//        entityManager.getTransaction().commit();
 
 
     }

@@ -74,9 +74,8 @@ public class AuthorizationCommand implements Command {
                 List<UserTarif> tariffs = tarifService.showTarifsByUserId(user.getId()); //все тарифы какие есть
                 session.setAttribute(USER_TARIFFS, tariffs);
                 Pagination.makePage(request); //все работает, но может что-то изменить?
-//может просто оюратиться к серивису и взять тарифы, их часть как было раньше
             } catch (ServiceException e) {
-                logger.error(e);   //никуда не переходим, тк это не главное в данной команде
+                logger.error(e);
                 session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
             }
             if (Role.ADMIN.equals(user.getRole())) {
