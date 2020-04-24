@@ -43,7 +43,7 @@ public class UserPaginationCommand implements Command {
 
 
         try {
-            userList = userService.getUsersRange(page);
+            userList = userService.getUsersRange(page, SIZE);
         } catch (ServiceException e) {
             logger.error(e);
         }

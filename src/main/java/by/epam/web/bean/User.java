@@ -9,6 +9,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
+import static javax.persistence.EnumType.ORDINAL;
+import static javax.persistence.EnumType.STRING;
+
 @Data
 @Entity
 @Table(name = "user")
@@ -100,13 +103,14 @@ public class User implements Serializable {
         this.email = email;
     }
 
-    @Enumerated(EnumType.STRING)
+    @Enumerated(STRING)
+    @Column(columnDefinition="ENUM('ADMIN','USER')")
     public Role getRole() {
         return role;
     }
 
-    public void setRole(String role) {
-        this.role = Role.valueOf(role.toUpperCase());
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public String getLogin() {

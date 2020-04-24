@@ -33,12 +33,10 @@ public class TarifServiceImpl implements TarifService {
     }
 
     @Override
-    public List<Tarif> showTariffRange(int page) throws ServiceException {
+    public List<Tarif> showTariffRange(int page, int limit) throws ServiceException {
         List<Tarif> tariffs;
         try {
-            int limit = 3;
-            int firstPosition = page * limit-limit;
-            tariffs = tarifDAO.getTariffRange(firstPosition, limit);
+            tariffs = tarifDAO.getTariffRange(page, limit);
         } catch (DAOException e) {
             logger.error(e);
             throw new ServiceException("problems with dao");

@@ -28,7 +28,7 @@ public interface UserDAO {
 
     boolean updateUserBalanceById(int id, double balance) throws DAOException;
 
-    List<User> getUsersRange(int firstPosition, int limit) throws DAOException;
+    List<User> getUsersRange(int page, int limit) throws DAOException;
 
     List<User> findUsersByName(String name) throws DAOException;
 

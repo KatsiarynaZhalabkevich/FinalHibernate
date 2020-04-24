@@ -14,5 +14,5 @@ public interface UserService {
     boolean changeBalanceById(int id, double balance) throws ServiceException;
     boolean changeStatusById(int id, boolean active) throws ServiceException;
     User getUserById(int id)throws ServiceException;
-    List<User> getUsersRange(long page) throws ServiceException;
+    List<User> getUsersRange(long page, int limit) throws ServiceException;
 }
