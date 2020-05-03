@@ -11,6 +11,7 @@ import by.epam.web.service.impl.TarifServiceImpl;
 import by.epam.web.tag.JSPListBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -25,21 +26,23 @@ public class ShowTariffsCommand implements Command {
     private final static String USER = "user";
     private final static String TARIFFS = "tarifs";
     private final static String ERROR_MESSAGE = "errorMessage";
-    private final static String ERROR_MESSAGE_TEXT ="Can't get information about tariffs. Please, try later";
-    private final static String PAGE_NUM ="pageNum";
+    private final static String ERROR_MESSAGE_TEXT = "Can't get information about tariffs. Please, try later";
+    private final static String PAGE_NUM = "pageNum";
     private final static String IS_LAST_PAGE = "isLastPage";
     private final static int LIMIT = 3;
 
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    @Autowired
+    private TarifService tarifService;
 
-        TarifService tarifService = new TarifServiceImpl();
+    @Override
+    public String execute(HttpServletRequest request) throws IOException {
+
         List<Tarif> tarifList;
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);
 
-        String goToPage=JSPPageName.ERROR_PAGE;
+        String goToPage = JSPPageName.ERROR_PAGE;
         logger.info(request.getPathInfo());
         logger.info(request.getServletPath());
         logger.info(request.getRequestURL());
@@ -47,7 +50,7 @@ public class ShowTariffsCommand implements Command {
         long page;
         try {
 
-           tarifList= makePageTariff(request);
+            tarifList = makePageTariff(request);
             if (admin == null || !Role.ADMIN.equals(admin.getRole())) {
                 JSPListBean jspListBean = new JSPListBean(tarifList);
                 session.setAttribute("userbean", jspListBean);
@@ -58,11 +61,11 @@ public class ShowTariffsCommand implements Command {
         } catch (ServiceException e) {
             logger.error(e);
         }
-        response.sendRedirect(goToPage);
+        return "redirect:/" + goToPage;
     }
 
     private List<Tarif> makePageTariff(HttpServletRequest request) throws ServiceException {
-        TarifService tarifService = new TarifServiceImpl();
+
         List<Tarif> tarifList;
         HttpSession session = request.getSession();
 
@@ -82,7 +85,7 @@ public class ShowTariffsCommand implements Command {
             } else {
                 session.setAttribute(IS_LAST_PAGE, false);
             }
-        }else {
+        } else {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
         }
         return tarifList;

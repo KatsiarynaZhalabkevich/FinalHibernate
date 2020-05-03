@@ -4,13 +4,12 @@ import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import javax.servlet.ServletException;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -24,9 +23,12 @@ public class UserPaginationCommand implements Command {
     private static final String IS_LAST_PAGE = "isLastPageU";
     private static final int SIZE = 3;
 
+    @Autowired
+    private UserService userService;
+
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserService userService = ServiceProvider.getInstance().getUserService();
+    public String execute(HttpServletRequest request) throws IOException {
+
         List<User> userList = null;
         long page;
         HttpSession session = request.getSession();
@@ -61,6 +63,6 @@ public class UserPaginationCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
         }
 
-        response.sendRedirect(goToPage);
+        return "redirect:/"+goToPage;
     }
 }

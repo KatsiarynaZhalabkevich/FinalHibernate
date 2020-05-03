@@ -1,16 +1,11 @@
 package by.epam.web.filter;
 
-import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.controller.JSPPageName;
-import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
-import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import javax.servlet.*;
-import javax.servlet.annotation.WebFilter;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;

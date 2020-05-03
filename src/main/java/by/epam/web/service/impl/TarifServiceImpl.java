@@ -2,7 +2,6 @@ package by.epam.web.service.impl;
 
 import by.epam.web.bean.Tarif;
 import by.epam.web.dao.DAOException;
-import by.epam.web.dao.DAOProvider;
 import by.epam.web.dao.TarifDAO;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
@@ -10,14 +9,20 @@ import by.epam.web.service.TarifService;
 import by.epam.web.service.validation.TarifDataValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Service
+@Transactional
 public class TarifServiceImpl implements TarifService {
 
     private final static Logger logger = LogManager.getLogger();
-    private final static TarifDAO tarifDAO = DAOProvider.getInstance().getTarifDAO();
+
+    private TarifDAO tarifDAO;
     private final static TarifDataValidator validator = TarifDataValidator.getInstance();
 
     @Override

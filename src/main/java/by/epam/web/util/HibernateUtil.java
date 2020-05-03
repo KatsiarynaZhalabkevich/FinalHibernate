@@ -1,6 +1,7 @@
 package by.epam.web.util;
 
 import org.hibernate.Session;
+import org.springframework.context.annotation.PropertySource;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -11,7 +12,7 @@ public class HibernateUtil {
 
     public static EntityManager getEntityManager() {
         if (factory == null) {
-            factory = Persistence.createEntityManagerFactory("by.epam.web");
+            factory = Persistence.createEntityManagerFactory("classpath:hibernate.properties");
         }
         return factory.createEntityManager();
     }

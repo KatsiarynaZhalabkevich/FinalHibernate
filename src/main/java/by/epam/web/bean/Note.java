@@ -1,9 +1,11 @@
 package by.epam.web.bean;
 
 import lombok.EqualsAndHashCode;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 
@@ -13,7 +15,7 @@ import java.util.List;
 public class Note implements Serializable {
 
     private int id;
-    private Date time;
+    private LocalDateTime time;
     private Tarif tariff;
     private User user;
 
@@ -29,11 +31,12 @@ public class Note implements Serializable {
     public void setId(int id) {
         this.id = id;
     }
+    @CreationTimestamp
     @Column(name = "create_time")
-    public Date getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
-    public void setTime(Date time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
     @ManyToOne

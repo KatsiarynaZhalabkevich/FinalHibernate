@@ -10,6 +10,7 @@ import by.epam.web.dto.UserTarif;
 import by.epam.web.service.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,12 +32,16 @@ public class StatisticCommand implements Command {
     private final static String ERROR_MESSAGE_TEXT2 = "You have no permission for this action! Please, log in! ";
     private final static String TARIFFS = "tarifs";
     private final static String USERS_LIST = "usersList";
+    @Autowired
+ private    UserService userService;
+    @Autowired
+ private    TarifService tarifService;
+    @Autowired
+ private    NoteService noteService;
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserService userService = ServiceProvider.getInstance().getUserService();
-        TarifService tarifService = ServiceProvider.getInstance().getTarifService();
-        NoteService noteService = ServiceProvider.getInstance().getNoteService();
+    public String execute(HttpServletRequest request) throws IOException {
+
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);
@@ -76,7 +81,6 @@ public class StatisticCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
         }
 
-        // response.sendRedirect(goToPage);
-        request.getRequestDispatcher(goToPage).forward(request, response);
+        return goToPage;
     }
 }

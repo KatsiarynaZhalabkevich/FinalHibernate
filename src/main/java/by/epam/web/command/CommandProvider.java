@@ -1,13 +1,18 @@
 package by.epam.web.command;
 
 import by.epam.web.command.impl.*;
+import by.epam.web.service.NoteService;
+import by.epam.web.service.TarifService;
+import by.epam.web.service.UserService;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.HashMap;
 import java.util.Map;
 
 public class CommandProvider {
-    private static final CommandProvider instance = new CommandProvider();
+
     private Map<CommandName, Command> commands = new HashMap<>();
+
 
     public CommandProvider() {
         commands.put(CommandName.AUTHORIZATION, new AuthorizationCommand());
@@ -37,15 +42,12 @@ public class CommandProvider {
 
     }
 
-    public static CommandProvider getInstance() {
-        return instance;
-    }
-    public Command getCommand (String commandName) {
+    public Command getCommand(String commandName) {
         CommandName name = CommandName.valueOf(commandName.toUpperCase());
         Command command;
         if (null != name) {
             command = commands.get(name);
-        }else {
+        } else {
             command = commands.get(CommandName.NO_SUCH_COMMAND);
         }
         return command;

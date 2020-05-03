@@ -2,9 +2,11 @@ package by.epam.web.bean;
 
 
 import lombok.Data;
+import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
 import java.io.Serializable;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -25,7 +27,7 @@ public class User implements Serializable {
     private Role role = Role.USER;
     private double balance;
     private boolean active;
-    private Date time;
+    private LocalDateTime time;
 
     private List<Note> notesList;
 
@@ -54,12 +56,13 @@ public class User implements Serializable {
         this.id = id;
     }
 
+    @CreationTimestamp
     @Column(name = "create_time")
-    public Date getTime() {
+    public LocalDateTime getTime() {
         return time;
     }
 
-    public void setTime(Date time) {
+    public void setTime(LocalDateTime time) {
         this.time = time;
     }
 

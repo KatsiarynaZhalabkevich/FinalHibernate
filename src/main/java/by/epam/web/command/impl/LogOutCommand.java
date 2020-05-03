@@ -13,10 +13,10 @@ import java.io.IOException;
 public class LogOutCommand implements Command {
     private final static String USER="user";
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute(HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession();
         session.removeAttribute(USER);
         session.invalidate();
-        response.sendRedirect(JSPPageName.INDEX_PAGE);
+       return "redirect:/"+JSPPageName.INDEX_PAGE;
     }
 }

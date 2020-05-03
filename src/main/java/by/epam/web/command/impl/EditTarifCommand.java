@@ -10,6 +10,7 @@ import by.epam.web.service.TarifService;
 import by.epam.web.service.impl.TarifServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -33,10 +34,11 @@ public class EditTarifCommand implements Command {
     private final static String EDIT_MESSAGE_TEXT_OK="Tariff updated!";
     private final static String EDIT_MESSAGE_TEXT_NOT="Tariff not updated!";
     private final static String ERROR_MESSAGE_TEXT="You haven't permission for this action!";
-
+    @Autowired
+ private    TarifService tarifService;
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        TarifService tarifService = new TarifServiceImpl();
+    public String execute(HttpServletRequest request) throws IOException {
+
         HttpSession session = request.getSession(); //сессию создавать не нужно, тк пользователь уже авторизован
         User admin = (User) session.getAttribute(USER);
 
@@ -75,6 +77,6 @@ public class EditTarifCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
         }
 
-       response.sendRedirect(goToPage);
+       return "redirect:/"+goToPage;
     }
 }

@@ -1,21 +1,18 @@
 package by.epam.web.command.impl;
 
 import by.epam.web.bean.Role;
-import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.TarifService;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -27,13 +24,16 @@ public class ShowUserTariffsCommand implements Command {
     private final static String USER_TARIFFS = "userTarifList";
     private final static String ERROR_MESSAGE = "errorMessage";
     private final static String KONKR_USER = "userName";
-    private final static String ERROR_MESSAGE_TEXT ="Can't get user's tariffs" ;
-    private final static String ERROR_MESSAGE_TEXT2="You have no permission for this action! Please, log in! ";
-    @Override
+    private final static String ERROR_MESSAGE_TEXT = "Can't get user's tariffs";
+    private final static String ERROR_MESSAGE_TEXT2 = "You have no permission for this action! Please, log in! ";
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TarifService tarifService;
 
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserService userService = ServiceProvider.getInstance().getUserService();
-        TarifService tarifService = ServiceProvider.getInstance().getTarifService();
+    @Override
+    public String execute(HttpServletRequest request) throws IOException {
+
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);
@@ -66,7 +66,7 @@ public class ShowUserTariffsCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
         }
 
-        response.sendRedirect(goToPage);
+        return "redirect:/" + goToPage;
 
     }
 }

@@ -8,14 +8,13 @@ import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.NoteService;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.TarifService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -32,15 +31,35 @@ public class AddNoteCommand implements Command {
      * Метод для добавления новой записи о тарифе пользователя
      *
      * @param request
-     * @param response
      * @throws IOException
      * @throws ServletException
      */
-    @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    @Autowired
+    private NoteService noteService;
+    @Autowired
+    private TarifService tarifService;
 
-        NoteService noteService = ServiceProvider.getInstance().getNoteService();
-        TarifService tarifService = ServiceProvider.getInstance().getTarifService();
+
+    public NoteService getNoteService() {
+        return noteService;
+    }
+
+    public void setNoteService(NoteService noteService) {
+        this.noteService = noteService;
+    }
+
+    public TarifService getTarifService() {
+        return tarifService;
+    }
+
+    public void setTarifService(TarifService tarifService) {
+        this.tarifService = tarifService;
+    }
+
+    @Override
+    public String execute(HttpServletRequest request) throws IOException {
+
+
         HttpSession session = request.getSession(); //только зарегистрированный пользователь может добавить себе тариф
         User user = (User) session.getAttribute(USER);
         int tarifId = Integer.parseInt(request.getParameter(TARIFF_ID)); //удобнее сразу тариф забирать
@@ -75,9 +94,10 @@ public class AddNoteCommand implements Command {
         } else {
             request.setAttribute(ERROR_MESSAGE, "Session is expired. Please, sign in!");
             goToPage = JSPPageName.ERROR_PAGE;
-            response.sendRedirect(goToPage);
+            return "redirect:/" + goToPage;
         }
-        response.sendRedirect(goToPage);
+
+        return "redirect:/" + goToPage;
 
 
     }

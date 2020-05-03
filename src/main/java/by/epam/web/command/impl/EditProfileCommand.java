@@ -19,7 +19,7 @@ public class EditProfileCommand implements Command {
 
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute(HttpServletRequest request) throws IOException {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(USER);
@@ -29,7 +29,7 @@ public class EditProfileCommand implements Command {
             goToPage = JSPPageName.USER_EDIT_PROFILE_PAGE;
         } else goToPage = JSPPageName.INDEX_PAGE;
 
-        request.getRequestDispatcher(goToPage).forward(request, response);
+        return goToPage;
 
     }
 }

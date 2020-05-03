@@ -1,7 +1,9 @@
 package by.epam.web.dao.impl;
 
 import by.epam.web.bean.User;
+import by.epam.web.dao.BaseDao;
 import by.epam.web.dao.DAOException;
+import by.epam.web.dao.Dao;
 import by.epam.web.dao.UserDAO;
 import by.epam.web.util.HibernateUtil;
 import org.apache.logging.log4j.LogManager;
@@ -9,10 +11,10 @@ import org.apache.logging.log4j.Logger;
 import org.hibernate.HibernateException;
 import org.hibernate.JDBCException;
 import org.hibernate.Session;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
-import javax.persistence.Query;
-import javax.persistence.RollbackException;
+import javax.persistence.*;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,15 +22,19 @@ import java.util.List;
 /**
  * HQL
  */
-public class HibernateUserDAO implements UserDAO {
+@Repository
+public class HibernateUserDAO  implements UserDAO {
 
     private final static Logger logger = LogManager.getLogger();
+    @PersistenceContext
+    private EntityManager em;
+
 
     @Override
     public User findUserByLogin(String login) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
         try {
-            return (User) session.createQuery("from User where login = :login")
+            return (User) em.createQuery("from User where login = :login")
                     .setParameter("login", login)
                     .setMaxResults(1)
                     .getSingleResult();
@@ -39,20 +45,16 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public boolean addUser(User user) throws DAOException {
-        boolean flag = false;
+        boolean flag ;
         logger.info("попали в метод эдд юзер");
-        Session session = HibernateUtil.getSession();
         try {
             logger.info("все ок. готовимся к транзакции");
-            session.getTransaction().begin();
-            session.persist(user);
-            session.getTransaction().commit();
+            em.persist(user);
             logger.info("транзакция прошла. юзер создан");
             flag = true;
         } catch (HibernateException e) {
             logger.error("что-то пошло не так. юзер не создан");
             throw new DAOException(e);
-
         }
         return flag;
 
@@ -60,9 +62,8 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public User findUserById(int id) throws DAOException {
-        Session session = HibernateUtil.getSession();
         try {
-            return session.find(User.class, id);
+            return em.find(User.class, id);
         } catch (HibernateException e) {
             throw new DAOException(e);
         }
@@ -71,10 +72,8 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public boolean isLoginExist(String login) throws DAOException {
-        Session session = HibernateUtil.getSession();
-
         try {
-            List<User> users = session.createQuery("from User where login= :login")
+            List<User> users = em.createQuery("from User where login= :login")
                     .setParameter("login", login)
                     .getResultList();
             return users.size() > 0;
@@ -87,9 +86,8 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public List<User> takeAllUser() throws DAOException {
-        Session session = HibernateUtil.getSession();
         try {
-            return (List<User>) session.createQuery("from User").getResultList();
+            return (List<User>) em.createQuery("from User").getResultList();
         } catch (HibernateException e) {
             throw new DAOException(e);
         }
@@ -98,10 +96,8 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public boolean updateUserInfo(User user) throws DAOException {
-        Session session = HibernateUtil.getSession();
         try {
-            session.beginTransaction();
-            int count = session.createQuery("update User set name = :name, " +
+            int count = em.createQuery("update User set name = :name, " +
                     "surname = :surname, " +
                     "phone = :phone, " +
                     "email = :email " +
@@ -112,13 +108,11 @@ public class HibernateUserDAO implements UserDAO {
                     .setParameter("email", user.getEmail())
                     .setParameter("id", user.getId())
                     .executeUpdate();
-            session.getTransaction().commit();
-            session.close();
             System.out.println("сколько строчек преобразовалось " + count);
             return count == 1;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
+            em.getTransaction().rollback();
+            em.close();
             throw new DAOException(e);
         }
 
@@ -126,17 +120,12 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public boolean deleteUser(int id) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
         try {
-            session.beginTransaction();
-            User user = session.find(User.class, id);
-            session.remove(user);
-            session.getTransaction().commit();
-            session.close();
+            User user = em.find(User.class, id);
+            em.remove(user);
             return user != null;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
             throw new DAOException(e);
         }
 
@@ -151,19 +140,14 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public boolean updatePassword(User user) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
         try {
-            session.getTransaction().begin();
-            int count = session.createQuery("update User set password = :password where id = :id")
+            int count = em.createQuery("update User set password = :password where id = :id")
                     .setParameter("password", user.getPassword())
                     .setParameter("id", user.getId())
                     .executeUpdate();
-            session.getTransaction().commit();
-            session.close();
             return count == 1;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
             throw new DAOException(e);
         }
 
@@ -171,19 +155,14 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public boolean updateIsActive(boolean active, int id) throws DAOException {
-        Session session = HibernateUtil.getSession();
         try {
-            session.getTransaction().begin();
-            int count = session.createQuery("update User set active = :active where id = :id")
+
+            int count = em.createQuery("update User set active = :active where id = :id")
                     .setParameter("active", active)
                     .setParameter("id", id)
                     .executeUpdate();
-            session.getTransaction().commit();
-            session.close();
             return count == 1;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
             throw new DAOException(e);
         }
 
@@ -191,20 +170,15 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public boolean updateUserBalanceById(int id, double balance) throws DAOException {
-        Session session = HibernateUtil.getSession();
-
         try {
-            session.beginTransaction();
-            int count = session.createQuery("update User set balance = :balance where id = :id")
+
+            int count = em.createQuery("update User set balance = :balance where id = :id")
                     .setParameter("balance", balance)
                     .setParameter("id", id)
                     .executeUpdate();
-            session.getTransaction().commit();
-            session.close();
             return count == 1;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
+
             throw new DAOException(e);
         }
 
@@ -212,17 +186,14 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public List<User> getUsersRange(int page, int limit) throws DAOException {
-        Session session = HibernateUtil.getSession();
-
-        try {
-            Query query = session.createQuery("from User ");
-            session.close();
+               try {
+            Query query =em.createQuery("from User ");
 
             return (List<User>) query.setMaxResults(limit)
                     .setFirstResult(page * limit)
                     .getResultList();
         } catch (HibernateException e) {
-            session.close();
+
             throw new DAOException(e);
         }
 
@@ -232,16 +203,14 @@ public class HibernateUserDAO implements UserDAO {
     @Override
     public List<User> findUsersByName(String name) throws DAOException {
 
-        Session session = HibernateUtil.getSession();
         try {
-            session.getTransaction().begin();
-            Query query = session.createQuery("from User where name = :name")
+           em.getTransaction().begin();
+            Query query = em.createQuery("from User where name = :name")
                     .setParameter("name", name + "%");
-            session.close();
+
             return (List<User>) query.getResultList();
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
+
             throw new DAOException(e);
         }
 
@@ -249,14 +218,14 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public List<User> findUsersBySurname(String surname) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
         try {
-            Query query = session.createQuery("from User where surname = :surname")
+            Query query = em.createQuery("from User where surname = :surname")
                     .setParameter("surname", surname + "%");
-            session.close();
+
             return (List<User>) query.getResultList();
         } catch (HibernateException e) {
-            session.close();
+
             throw new DAOException(e);
         }
 
@@ -264,16 +233,16 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public List<User> findUsersByEmail(String email) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
         try {
-            Query query = session.createQuery("from User where email = :email")
+            Query query = em.createQuery("from User where email = :email")
                     .setParameter("email", email + "%");
-            session.close();
+
 
             return (List<User>) query.getResultList();
 
         } catch (HibernateException e) {
-            session.close();
+
             throw new DAOException(e);
         }
 
@@ -282,14 +251,14 @@ public class HibernateUserDAO implements UserDAO {
 
     @Override
     public List<User> findUsersByPhone(String phone) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
         try {
-            Query query = session.createQuery("from User where phone = :phone")
+            Query query = em.createQuery("from User where phone = :phone")
                     .setParameter("phone", phone + "%");
-            session.close();
+
             return (List<User>) query.getResultList();
         } catch (HibernateException e) {
-            session.close();
+
             throw new DAOException(e);
         }
 

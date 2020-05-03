@@ -11,12 +11,12 @@ import java.io.IOException;
 
 public class RegistrationCommand implements Command {
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-//Нет смысла в этой команде. Со стартовой страницы просто переходим на страницу jsp, данные никакие не передаются
+    public String execute(HttpServletRequest request) throws IOException {
+
         HttpSession session = request.getSession(true);
-        //любой может зарегистрироваться
+
         String goToPage = JSPPageName.USER_REG_PAGE;
-        response.sendRedirect(goToPage);
+        return "redirect:/"+goToPage;
 
 
     }

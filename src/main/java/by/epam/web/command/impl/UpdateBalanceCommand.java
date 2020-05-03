@@ -4,14 +4,12 @@ import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 
@@ -22,13 +20,16 @@ public class UpdateBalanceCommand implements Command {
     private final static String BALANCE = "balance";
     private final static String UPD_BALANCE_MESS = "updBalanceMessage";
     private final static String ERROR_MESSAGE = "errorMessage";
-    private final static String UPD_BALANCE_MESS_OK="Balance updated!";
-    private final static String UPD_BALANCE_MESS_NOT="Can't upd user balance";
-    private final static String ERROR_MESSAGE_TEXT="Can't upd user balance. Please, sign in and try again";
+    private final static String UPD_BALANCE_MESS_OK = "Balance updated!";
+    private final static String UPD_BALANCE_MESS_NOT = "Can't upd user balance";
+    private final static String ERROR_MESSAGE_TEXT = "Can't upd user balance. Please, sign in and try again";
+
+    @Autowired
+    private UserService userService;
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserService userService = ServiceProvider.getInstance().getUserService();
+    public String execute(HttpServletRequest request) throws IOException {
+
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(USER); //по ключу получаем значение
@@ -41,18 +42,18 @@ public class UpdateBalanceCommand implements Command {
                 if (userService.saveUpdateUser(user)) {
                     session.setAttribute(UPD_BALANCE_MESS, UPD_BALANCE_MESS_OK);
                     session.setAttribute(USER, user);
-                }else{
+                } else {
                     session.setAttribute(UPD_BALANCE_MESS, UPD_BALANCE_MESS_NOT);
                 }
             } catch (ServiceException e) {
                 logger.error(e);
 
             }
-        }else{
-            goToPage=JSPPageName.ERROR_PAGE;
-            session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT );
+        } else {
+            goToPage = JSPPageName.ERROR_PAGE;
+            session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
         }
-        response.sendRedirect(goToPage);
+        return "redirect:/" + goToPage;
 
 
     }

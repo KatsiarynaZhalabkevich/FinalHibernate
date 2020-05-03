@@ -2,19 +2,23 @@ package by.epam.web.service.impl;
 
 import by.epam.web.bean.Note;
 import by.epam.web.dao.DAOException;
-import by.epam.web.dao.DAOProvider;
 import by.epam.web.dao.NoteDAO;
 import by.epam.web.service.NoteService;
 import by.epam.web.service.ServiceException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
-
+@Service
+@Transactional
 public class NoteServiceImpl implements NoteService {
     private final static Logger logger = LogManager.getLogger();
-    private final static NoteDAO noteDAO = DAOProvider.getInstance().getNoteDAO();
+    @Autowired
+    private static NoteDAO noteDAO;
     @Override
     public boolean addNote(Note note) throws ServiceException {
         boolean flag;

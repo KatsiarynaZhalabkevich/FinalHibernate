@@ -5,18 +5,18 @@ import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.ComponentScan;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
-
+@ComponentScan("by.epam.web")
 public class ChangeBalanceCommand implements Command {
     private final static Logger logger = LogManager.getLogger();
     private final static String USER = "user";
@@ -34,13 +34,17 @@ public class ChangeBalanceCommand implements Command {
      * Метод администратора для изменения баланса пользователя
      *
      * @param request
-     * @param response
+
      * @throws IOException
      * @throws ServletException
      */
+
+    @Autowired
+    UserService userService;
+
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserService userService = ServiceProvider.getInstance().getUserService();
+    public String execute(HttpServletRequest request) throws IOException {
+
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER); //admin
@@ -67,7 +71,7 @@ public class ChangeBalanceCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
 
         }
-        response.sendRedirect(goToPage);
+        return "redirect:/"+goToPage;
 
     }
 }

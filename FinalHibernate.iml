@@ -4,6 +4,7 @@
     <facet type="hibernate" name="Hibernate">
       <configuration>
         <datasource-map>
+          <unit-entry name="sessionFactoryBean" />
           <unit-entry name="src:main:resources:hibernate.cfg.xml" />
         </datasource-map>
         <naming-strategy-map />
@@ -14,6 +15,7 @@
       <configuration>
         <setting name="validation-enabled" value="true" />
         <datasource-mapping>
+          <factory-entry name="Entities" value="fd3358c3-ab35-4091-8319-dc599aa17c43" />
           <factory-entry name="by.epam.web" value="fd3358c3-ab35-4091-8319-dc599aa17c43" />
           <factory-entry name="org.hibernate.tutorial.jpa" />
         </datasource-mapping>

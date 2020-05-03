@@ -11,6 +11,7 @@ import by.epam.web.service.impl.TarifServiceImpl;
 import by.epam.web.tag.JSPListBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -27,12 +28,13 @@ public class TariffPaginationCommand implements Command {
     private final static String ERROR_MESSAGE_TEXT = "Can't get information about tariffs. Please, try later";
     private static final String PAGE_NUM = "pageNum";
     private static final String IS_LAST_PAGE = "isLastPage";
-    private static final int LIMIT =3 ;
-
+    private static final int LIMIT = 3;
+    @Autowired
+    private TarifService tarifService;
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        TarifService tarifService = new TarifServiceImpl();
+    public String execute(HttpServletRequest request) throws IOException {
+
         List<Tarif> tarifList = null;
 
         HttpSession session = request.getSession(true);
@@ -44,7 +46,7 @@ public class TariffPaginationCommand implements Command {
             page = (Long) session.getAttribute(PAGE_NUM);
 
         } else {
-            page=1;
+            page = 1;
             session.setAttribute(PAGE_NUM, page);
         }
 
@@ -67,6 +69,6 @@ public class TariffPaginationCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
         }
 
-        response.sendRedirect(goToPage);
+        return "redirect:/" + goToPage;
     }
 }

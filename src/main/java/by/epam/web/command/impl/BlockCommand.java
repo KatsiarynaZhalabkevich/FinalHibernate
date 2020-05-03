@@ -4,17 +4,13 @@ import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
-import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
-import by.epam.web.service.TarifService;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -30,9 +26,12 @@ public class BlockCommand implements Command {
     private final static String BLOCK_MESSAGE_TEXT_OK="User's blocked";
     private final static String BLOCK_MESSAGE_TEXT_NOT="User's didn't block";
 
+    @Autowired
+    UserService userService;
+
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserService userService = ServiceProvider.getInstance().getUserService();
+    public String execute(HttpServletRequest request) throws IOException {
+
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);
         List<User> users = new ArrayList<>();
@@ -71,6 +70,6 @@ public class BlockCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
             goToPage = JSPPageName.ERROR_PAGE;
         }
-        response.sendRedirect(goToPage);
+       return "redirect:/"+ goToPage;
     }
 }

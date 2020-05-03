@@ -2,13 +2,15 @@ package by.epam.web.dao.impl;
 
 import by.epam.web.bean.Note;
 import by.epam.web.bean.Tarif;
-import by.epam.web.bean.User;
 import by.epam.web.dao.DAOException;
 import by.epam.web.dao.TarifDAO;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.util.HibernateUtil;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Repository;
 
 import javax.persistence.*;
 import javax.persistence.criteria.*;
@@ -20,39 +22,31 @@ import java.util.List;
  * Criteria JPA usage
  * HQL
  */
+@Repository
 
 public class HibernateTariffDAO implements TarifDAO {
+    @PersistenceContext
+    private EntityManager em;
+
     @Override
     public boolean addTarif(Tarif tarif) throws DAOException {
-        Session session = HibernateUtil.getSession();
         try {
-            session.getTransaction().begin();
-            session.persist(tarif);
-            session.getTransaction().commit();
-            session.clear();
-            session.close();
+            em.persist(tarif);
             return true;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
             throw new DAOException(e);
         }
-
     }
 
     @Override
     public boolean editTarif(Tarif tarif) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
+        Session session =  em.unwrap(Session.class);
         try {
-            session.getTransaction().begin();
             session.update(tarif);
-            session.getTransaction().commit();
-            session.clear();
-            session.close();
             return true;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
+
             throw new DAOException(e);
         }
 
@@ -60,18 +54,16 @@ public class HibernateTariffDAO implements TarifDAO {
 
     @Override
     public Tarif getTarifById(int id) throws DAOException {
-        EntityManager entityManager = HibernateUtil.getEntityManager();
+
         try {
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<Tarif> criteria = criteriaBuilder.createQuery(Tarif.class);
             Root<Tarif> tarif = criteria.from(Tarif.class);
             criteria.select(tarif)
                     .where(criteriaBuilder.equal(tarif.get("id"), id));
-            entityManager.close();
-            return entityManager.createQuery(criteria).getSingleResult();
-        } catch (HibernateException e) {
 
-            entityManager.close();
+            return em.createQuery(criteria).getSingleResult();
+        } catch (HibernateException e) {
             throw new DAOException(e);
         }
 
@@ -79,36 +71,28 @@ public class HibernateTariffDAO implements TarifDAO {
 
     @Override
     public List<Tarif> getAll() throws DAOException {
-        EntityManager entityManager = HibernateUtil.getEntityManager();
         try {
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
             CriteriaQuery<Tarif> criteriaQuery = criteriaBuilder.createQuery(Tarif.class);
             Root<Tarif> tarif = criteriaQuery.from(Tarif.class);
             criteriaQuery.select(tarif);
-            entityManager.close();
-            return entityManager.createQuery(criteriaQuery).getResultList();
+
+            return em.createQuery(criteriaQuery).getResultList();
         } catch (HibernateException e) {
-            entityManager.close();
             throw new DAOException(e);
         }
 
     }
 
-    @Override //+
+    @Override
     public boolean deleteTarifById(int id) throws DAOException {
-        Session session = HibernateUtil.getSession();
+
         try {
-            session.getTransaction().begin();
-            Query query = session.createQuery("delete from Tarif where id = :id");
+            Query query = em.createQuery("delete from Tarif where id = :id");
             query.setParameter("id", id);
             int count = query.executeUpdate();
-            session.getTransaction().commit();
-            session.clear();
-            session.close();
             return count == 1;
         } catch (RollbackException e) {
-            session.getTransaction().rollback();
-            session.close();
             throw new DAOException(e);
         }
 
@@ -118,10 +102,8 @@ public class HibernateTariffDAO implements TarifDAO {
     @Override
     public List<UserTarif> getTarifByUserId(int id) throws DAOException {
 
-        EntityManager entityManager = HibernateUtil.getEntityManager();
-
         try {
-            CriteriaBuilder criteriaBuilder = entityManager.getCriteriaBuilder();
+            CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
             CriteriaQuery<Tuple> criteria = criteriaBuilder.createQuery(Tuple.class);
 
@@ -140,9 +122,8 @@ public class HibernateTariffDAO implements TarifDAO {
                     .where(eq2);
 
             List<UserTarif> userTarifs = new ArrayList<>();
-            List<Tuple> tupleList = entityManager.createQuery(criteria).getResultList();
+            List<Tuple> tupleList = em.createQuery(criteria).getResultList();
 
-            entityManager.close();
             tupleList.forEach(t -> {
 
                 int tarifId = (int) t.get("tarifId");
@@ -175,8 +156,6 @@ public class HibernateTariffDAO implements TarifDAO {
 
             return userTarifs;
         } catch (HibernateException e) {
-
-            entityManager.close();
             throw new DAOException(e);
         }
 
@@ -184,21 +163,19 @@ public class HibernateTariffDAO implements TarifDAO {
 
     @Override
     public List<Tarif> getTariffRange(int page, int limit) throws DAOException {
-        EntityManager entityManager = HibernateUtil.getEntityManager();
+
         try {
-            CriteriaBuilder builder = entityManager.getCriteriaBuilder();
+            CriteriaBuilder builder = em.getCriteriaBuilder();
             CriteriaQuery<Tarif> query = builder.createQuery(Tarif.class);
             query.select(query.from(Tarif.class));
 
-            TypedQuery<Tarif> typedQuery = entityManager.createQuery(query);
+            TypedQuery<Tarif> typedQuery = em.createQuery(query);
             typedQuery.setFirstResult(page);
             typedQuery.setMaxResults(page * limit);
 
             return typedQuery.getResultList();
 
         } catch (HibernateException e) {
-
-            entityManager.close();
             throw new DAOException(e);
         }
 

@@ -3,24 +3,27 @@ package by.epam.web.service.impl;
 import by.epam.web.bean.User;
 import by.epam.web.bean.util.PasswordCreater;
 import by.epam.web.dao.DAOException;
-import by.epam.web.dao.DAOProvider;
 import by.epam.web.dao.UserDAO;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
 import by.epam.web.service.validation.UserDataValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
 
 
-
-
+@Transactional
+@Service
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LogManager.getLogger();
     private static final UserDataValidator validator = UserDataValidator.getInstance();
-    private static final UserDAO userDao = DAOProvider.getInstance().getUserDao();
+    @Autowired
+    private UserDAO userDao;
 
     /**
      *

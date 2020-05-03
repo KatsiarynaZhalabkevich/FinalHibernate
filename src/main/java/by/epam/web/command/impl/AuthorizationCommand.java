@@ -7,15 +7,14 @@ import by.epam.web.command.util.Pagination;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.TarifService;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -40,20 +39,25 @@ public class AuthorizationCommand implements Command {
      * и всех тарифов для отображения на странице пользователя
      *
      * @param request
-     * @param response
+     *
      * @throws IOException
      * @throws ServletException
      */
+    @Autowired
+    UserService userService;
+    @Autowired
+    TarifService tarifService;
+
+
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute(HttpServletRequest request) throws IOException {
 
         String login;
         String password;
         login = request.getParameter(LOGIN);
         password = request.getParameter(PASSWORD);
 
-        UserService userService = ServiceProvider.getInstance().getUserService();
-        TarifService tarifService = ServiceProvider.getInstance().getTarifService();
+
 
         HttpSession session = request.getSession(true);
 
@@ -93,7 +97,7 @@ public class AuthorizationCommand implements Command {
 
         }
         //response.sendRedirect(goToPage);
-        request.getRequestDispatcher(goToPage).forward(request, response);
+        return goToPage;
 
     }
 

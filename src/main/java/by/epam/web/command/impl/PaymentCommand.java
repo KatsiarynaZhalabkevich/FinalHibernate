@@ -7,15 +7,13 @@ import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.TarifService;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -31,11 +29,15 @@ public class PaymentCommand implements Command {
     private final static String ERROR_MESSAGE_TEXT_PAY="Can't get users for payment!";
     private final static String ERROR_MESSAGE_TEXT= "Session is not valid!";
 
+    @Autowired
+  private   UserService userService;
+    @Autowired
+  private   TarifService tarifService;
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute(HttpServletRequest request) throws IOException {
 
-        UserService userService = ServiceProvider.getInstance().getUserService();
-        TarifService tarifService = ServiceProvider.getInstance().getTarifService();
+
+
         List<UserTarif> userTariffs = new ArrayList<>();
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);
@@ -71,6 +73,7 @@ public class PaymentCommand implements Command {
                 }
                 session.setAttribute(PAYMENT_MESSAGE, PAYMENT_MESSAGE_TEXT);
                 //надо получить всех юзеров заново с новой информацией
+                //использовать пагинацию!!! а то вывалятся новые юзеры
                 try {
                     userList = new ArrayList<>();
                     userList.addAll(userService.getUsers());
@@ -88,7 +91,7 @@ public class PaymentCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
             goToPage = JSPPageName.ERROR_PAGE;
         }
-        response.sendRedirect(goToPage);
+        return "redirect:/"+goToPage;
     }
 
     private double paymentToWithdraw(List<UserTarif> userTariffs) {

@@ -5,14 +5,12 @@ import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -29,10 +27,12 @@ public class UpdateStatusCommand implements Command {
     private final static String UPD_STATUS_NOT="Can't upd user status";
     private final static String ERROR_MESSAGE_TEXT=  "You have no permission for this action! Please, log in! ";
 
+    @Autowired
+    private UserService userService;
 
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
-        UserService userService = ServiceProvider.getInstance().getUserService();
+    public String execute(HttpServletRequest request) throws IOException{
+
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER); //admin
@@ -63,6 +63,6 @@ public class UpdateStatusCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
         }
-        response.sendRedirect(goToPage);
+        return "redirect:/"+goToPage;
     }
 }

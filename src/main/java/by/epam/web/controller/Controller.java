@@ -2,57 +2,61 @@ package by.epam.web.controller;
 
 import by.epam.web.command.Command;
 import by.epam.web.command.CommandProvider;
-import by.epam.web.command.util.RedirectForwardMaker;
 import by.epam.web.tag.TimeJSPTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Locale;
 
-
-public class Controller extends HttpServlet {
-    private  final static long serialVersionUID = 1L;
+@org.springframework.stereotype.Controller
+@RequestMapping
+public class Controller {
+    private final static long serialVersionUID = 1L;
     private final static Logger logger = LogManager.getLogger();
-    private final static  CommandProvider provider = CommandProvider.getInstance();
+    @Autowired
+    private  CommandProvider provider;
 
-    private  final static String COMMAND = "command";
+    private final static String COMMAND = "command";
+
     public Controller() {
         super();
 
     }
 
+    @GetMapping
+    public String doGet(HttpServletRequest request) throws IOException {
 
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-
-        doPost(request, response);
+        return doPost(request);
     }
 
-
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    @PostMapping
+    public String doPost(HttpServletRequest request) throws IOException {
 
         String commandName;
         Command command;
 
-        if(request.getParameter("local")!=null) {
+        if (request.getParameter("local") != null) {
             request.getSession(true).setAttribute("local", request.getParameter("local"));
-            if(request.getParameter("local").equals("ru")){
-                TimeJSPTag.locale=new Locale("ru");
-            }else{
-                TimeJSPTag.locale=Locale.ENGLISH;
+            if (request.getParameter("local").equals("ru")) {
+                TimeJSPTag.locale = new Locale("ru");
+            } else {
+                TimeJSPTag.locale = Locale.ENGLISH;
             }
             logger.info(request.getParameter("local"));
-            RedirectForwardMaker.forward(request, response, JSPPageName.INDEX_PAGE);
+            return "redirect:/main";
+
         }
 
-            commandName = request.getParameter(COMMAND);
-            command = provider.getCommand(commandName);
-            logger.info(commandName);
-            command.execute(request, response);
+        commandName = request.getParameter(COMMAND);
+        command = provider.getCommand(commandName);
+
+        return command.execute(request);
 
 
     }

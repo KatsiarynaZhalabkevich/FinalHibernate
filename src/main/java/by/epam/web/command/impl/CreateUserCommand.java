@@ -5,15 +5,14 @@ import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
-import by.epam.web.service.ServiceProvider;
 import by.epam.web.service.TarifService;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -41,12 +40,16 @@ public class CreateUserCommand implements Command {
      * Метод для создания пользователя
      *
      * @param request
-     * @param response
      * @throws IOException
      * @throws ServletException
      */
+    @Autowired
+    private UserService userService;
+    @Autowired
+    private TarifService tarifService;
+
     @Override
-    public void execute(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+    public String execute(HttpServletRequest request) throws IOException {
         HttpSession session = request.getSession();
         String name = request.getParameter(NAME);
         String surname = request.getParameter(SURNAME);
@@ -65,9 +68,6 @@ public class CreateUserCommand implements Command {
         user.setEmail(email);
         user.setPhone(phone);
 
-
-        UserService userService = ServiceProvider.getInstance().getUserService();
-        TarifService tarifService = ServiceProvider.getInstance().getTarifService();
 
         String goToPage;
 
@@ -116,7 +116,7 @@ public class CreateUserCommand implements Command {
             goToPage = JSPPageName.USER_REG_PAGE;
         }
 
-        //  response.sendRedirect(goToPage);
-        request.getRequestDispatcher(goToPage).forward(request, response);
+
+        return goToPage;
     }
 }
