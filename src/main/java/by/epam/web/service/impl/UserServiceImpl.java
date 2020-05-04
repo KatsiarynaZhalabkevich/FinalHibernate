@@ -13,11 +13,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+
 import java.util.ArrayList;
 import java.util.List;
 
 
-@Transactional
+
 @Service
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LogManager.getLogger();
@@ -32,6 +33,7 @@ public class UserServiceImpl implements UserService {
      * @return
      * @throws ServiceException
      */
+
     @Override
     public User authorization(String login, String password) throws ServiceException {
         //проверка корректности ввода
@@ -65,6 +67,7 @@ public class UserServiceImpl implements UserService {
      * @return
      * @throws ServiceException
      */
+    @Transactional
     @Override
     public boolean saveUpdateUser(User user) throws ServiceException {
         boolean flag;
@@ -131,7 +134,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean isLoginUniq(String login) throws ServiceException {
         boolean flag;
-        //не проверяем логин, тк если он неверный, то просто такого пользователя не будет
         if (login == null) {
             logger.error("Login is null");
             throw new ServiceException("Login field is empty!");
@@ -194,6 +196,8 @@ public class UserServiceImpl implements UserService {
      * @throws ServiceException
      */
     //метод для админа, он может понижать баланс!
+    @Transactional
+    @Override
     public boolean changeBalanceById(int id, double balance) throws ServiceException {
         boolean flag;
         if (balance > 100) {
@@ -216,16 +220,14 @@ public class UserServiceImpl implements UserService {
      * @return
      * @throws ServiceException
      */
+    @Override
     public boolean changeStatusById(int id, boolean active) throws ServiceException {
         boolean flag;
-
-
         try {
             flag = userDao.updateIsActive(active, id);
         } catch (DAOException e) {
             logger.error("Can't upd status serv");
             throw new ServiceException(e);
-
         }
         return flag;
     }

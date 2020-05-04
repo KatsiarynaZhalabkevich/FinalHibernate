@@ -5,6 +5,7 @@ import org.hibernate.Transaction;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
+import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -16,9 +17,9 @@ import javax.sql.DataSource;
 
 @Configuration
 @Import(SettingsConfig.class)
+@EnableJpaRepositories("by.epam.web.repository")
 public class HibernateConfig {
     private final SettingsConfig settingsConfig;
-    private final EntityManagerFactory factory=null;
 
     public HibernateConfig(SettingsConfig settingsConfig) {
         this.settingsConfig = settingsConfig;
@@ -45,16 +46,6 @@ public class HibernateConfig {
         sf.setPackagesToScan("by.epam.web.bean");
         sf.setHibernateProperties(settingsConfig.hibernateProperties());
         return sf;
-    }
-    @Bean
-    public PlatformTransactionManager hibernateTransactionManager(){
-        HibernateTransactionManager transactionManager = new HibernateTransactionManager();
-        transactionManager.setSessionFactory(sessionFactoryBean(dataSource()).getObject());
-        return transactionManager;
-    }
-    @Bean
-    public TransactionTemplate transactionTemplate(){
-        return new TransactionTemplate(hibernateTransactionManager());
     }
 
 }
