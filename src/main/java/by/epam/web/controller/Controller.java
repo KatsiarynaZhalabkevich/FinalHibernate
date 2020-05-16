@@ -2,6 +2,10 @@ package by.epam.web.controller;
 
 import by.epam.web.command.Command;
 import by.epam.web.command.CommandProvider;
+import by.epam.web.config.ServiceConfig;
+import by.epam.web.service.NoteService;
+import by.epam.web.service.TarifService;
+import by.epam.web.service.UserService;
 import by.epam.web.tag.TimeJSPTag;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,27 +19,31 @@ import java.io.IOException;
 import java.util.Locale;
 
 @org.springframework.stereotype.Controller
-@RequestMapping
+//@RequestMapping("/controller")
 public class Controller {
     private final static long serialVersionUID = 1L;
     private final static Logger logger = LogManager.getLogger();
     @Autowired
-    private  CommandProvider provider;
+    private CommandProvider provider;
+
+   private ServiceConfig serviceConfig;
+
 
     private final static String COMMAND = "command";
 
-    public Controller() {
+    public Controller(ServiceConfig serviceConfig) {
         super();
+        this.serviceConfig = serviceConfig;
 
     }
 
-    @GetMapping
+    @GetMapping("/controller")
     public String doGet(HttpServletRequest request) throws IOException {
 
         return doPost(request);
     }
 
-    @PostMapping
+    @PostMapping("/controller")
     public String doPost(HttpServletRequest request) throws IOException {
 
         String commandName;
@@ -49,14 +57,16 @@ public class Controller {
                 TimeJSPTag.locale = Locale.ENGLISH;
             }
             logger.info(request.getParameter("local"));
-            return "redirect:/main";
+            return "redirect:/"+JSPPageName.INDEX_PAGE;
 
         }
 
         commandName = request.getParameter(COMMAND);
-        command = provider.getCommand(commandName);
+        logger.info("Provider "+provider);
 
-        return command.execute(request);
+        command = provider.getCommand(commandName);
+        logger.info("Command name " + commandName);
+        return command.execute(request, serviceConfig);
 
 
     }

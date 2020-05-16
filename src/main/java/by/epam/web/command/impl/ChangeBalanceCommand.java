@@ -3,6 +3,7 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
@@ -16,7 +17,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
-@ComponentScan("by.epam.web")
+
+
 public class ChangeBalanceCommand implements Command {
     private final static Logger logger = LogManager.getLogger();
     private final static String USER = "user";
@@ -26,25 +28,25 @@ public class ChangeBalanceCommand implements Command {
     private final static String USERS_LIST = "usersList";
     private final static String UPD_BALANCE_MESSAGE = "updBalanceMessage";
     private final static String ERROR_MESSAGE = "errorMessage";
-    private final static String UPD_BALANCE_MESSAGE_OK="Balance updated!";
-    private final static String UPD_BALANCE_MESSAGE_NOT="Can't upd user balance";
-    private final static String ERROR_MESSAGE_TEXT="You have no permission for this action! Please, log in! ";
+    private final static String UPD_BALANCE_MESSAGE_OK = "Balance updated!";
+    private final static String UPD_BALANCE_MESSAGE_NOT = "Can't upd user balance";
+    private final static String ERROR_MESSAGE_TEXT = "You have no permission for this action! Please, log in! ";
 
     /**
      * Метод администратора для изменения баланса пользователя
      *
      * @param request
-
      * @throws IOException
      * @throws ServletException
      */
 
-    @Autowired
-    UserService userService;
+
+    private UserService userService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
 
+        userService = serviceConfig.userService();
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER); //admin
@@ -71,7 +73,7 @@ public class ChangeBalanceCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
 
         }
-        return "redirect:/"+goToPage;
+        return "redirect:/" + goToPage;
 
     }
 }

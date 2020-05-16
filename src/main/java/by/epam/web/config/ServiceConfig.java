@@ -11,18 +11,20 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Import;
 
 @Configuration
-@Import(DaoConfig.class)
+//@Import(DaoConfig.class)
 public class ServiceConfig {
     @Bean
-    public UserService userService(){
+    public UserService userService() {
         return new UserServiceImpl();
     }
+
     @Bean
-    public TarifService tarifService(){
+    public TarifService tarifService() {
         return new TarifServiceImpl();
     }
+
     @Bean
-    public NoteService noteService(){
+    public NoteService noteService() {
         return new NoteServiceImpl();
     }
 }

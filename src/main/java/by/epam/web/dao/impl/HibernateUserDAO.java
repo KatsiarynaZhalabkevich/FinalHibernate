@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * HQL
  */
-@Repository
+//@Repository
 public class HibernateUserDAO  implements UserDAO {
 
     private final static Logger logger = LogManager.getLogger();
@@ -46,14 +46,11 @@ public class HibernateUserDAO  implements UserDAO {
     @Override
     public boolean addUser(User user) throws DAOException {
         boolean flag ;
-        logger.info("попали в метод эдд юзер");
+
         try {
-            logger.info("все ок. готовимся к транзакции");
             em.persist(user);
-            logger.info("транзакция прошла. юзер создан");
             flag = true;
         } catch (HibernateException e) {
-            logger.error("что-то пошло не так. юзер не создан");
             throw new DAOException(e);
         }
         return flag;
@@ -108,7 +105,6 @@ public class HibernateUserDAO  implements UserDAO {
                     .setParameter("email", user.getEmail())
                     .setParameter("id", user.getId())
                     .executeUpdate();
-            System.out.println("сколько строчек преобразовалось " + count);
             return count == 1;
         } catch (RollbackException e) {
             em.getTransaction().rollback();
@@ -156,7 +152,6 @@ public class HibernateUserDAO  implements UserDAO {
     @Override
     public boolean updateIsActive(boolean active, int id) throws DAOException {
         try {
-
             int count = em.createQuery("update User set active = :active where id = :id")
                     .setParameter("active", active)
                     .setParameter("id", id)
@@ -184,13 +179,13 @@ public class HibernateUserDAO  implements UserDAO {
 
     }
 
-    @Override
+    @Override //формула изменена для правильного отображения
     public List<User> getUsersRange(int page, int limit) throws DAOException {
                try {
             Query query =em.createQuery("from User ");
 
             return (List<User>) query.setMaxResults(limit)
-                    .setFirstResult(page * limit)
+                    .setFirstResult(page * limit-limit)
                     .getResultList();
         } catch (HibernateException e) {
 
@@ -222,7 +217,6 @@ public class HibernateUserDAO  implements UserDAO {
         try {
             Query query = em.createQuery("from User where surname = :surname")
                     .setParameter("surname", surname + "%");
-
             return (List<User>) query.getResultList();
         } catch (HibernateException e) {
 
@@ -237,8 +231,6 @@ public class HibernateUserDAO  implements UserDAO {
         try {
             Query query = em.createQuery("from User where email = :email")
                     .setParameter("email", email + "%");
-
-
             return (List<User>) query.getResultList();
 
         } catch (HibernateException e) {
@@ -255,7 +247,6 @@ public class HibernateUserDAO  implements UserDAO {
         try {
             Query query = em.createQuery("from User where phone = :phone")
                     .setParameter("phone", phone + "%");
-
             return (List<User>) query.getResultList();
         } catch (HibernateException e) {
 

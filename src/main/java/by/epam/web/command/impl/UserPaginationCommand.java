@@ -2,12 +2,14 @@ package by.epam.web.command.impl;
 
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -23,12 +25,12 @@ public class UserPaginationCommand implements Command {
     private static final String IS_LAST_PAGE = "isLastPageU";
     private static final int SIZE = 3;
 
-    @Autowired
+
     private UserService userService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
-
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        userService = serviceConfig.userService();
         List<User> userList = null;
         long page;
         HttpSession session = request.getSession();
@@ -43,9 +45,9 @@ public class UserPaginationCommand implements Command {
             session.setAttribute(PAGE_NUM, page);
         }
 
-
+//нумерация страниц идет  нуля!!!
         try {
-            userList = userService.getUsersRange(page, SIZE);
+            userList = userService.getUsersRange(page-1, SIZE);
         } catch (ServiceException e) {
             logger.error(e);
         }
@@ -63,6 +65,6 @@ public class UserPaginationCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
         }
 
-        return "redirect:/"+goToPage;
+        return "redirect:/" + goToPage;
     }
 }

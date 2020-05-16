@@ -5,6 +5,7 @@ import by.epam.web.bean.Role;
 import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.TarifService;
@@ -12,6 +13,7 @@ import by.epam.web.service.impl.TarifServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -31,13 +33,13 @@ public class DeleteTarifCommand implements Command {
     private final static String ERROR_MESSAGE_TEXT = "Your session is finished or you don't have permission to delete tariff!";
     private final static String DELETE_MESSAGE_TEXT_NOT = "Tariff wasn't deleted!";
 
-    @Autowired
+
     private TarifService tarifService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
 
-
+        tarifService = serviceConfig.tarifService();
         HttpSession session = request.getSession(); //сессию создавать не нужно, тк пользователь уже авторизован
         User admin = (User) session.getAttribute(USER);
         int tarifId = Integer.parseInt(request.getParameter(TARIFF_ID));

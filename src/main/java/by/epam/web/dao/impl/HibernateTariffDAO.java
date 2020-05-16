@@ -22,7 +22,7 @@ import java.util.List;
  * Criteria JPA usage
  * HQL
  */
-@Repository
+//@Repository
 
 public class HibernateTariffDAO implements TarifDAO {
     @PersistenceContext
@@ -170,8 +170,8 @@ public class HibernateTariffDAO implements TarifDAO {
             query.select(query.from(Tarif.class));
 
             TypedQuery<Tarif> typedQuery = em.createQuery(query);
-            typedQuery.setFirstResult(page);
-            typedQuery.setMaxResults(page * limit);
+            typedQuery.setFirstResult(page*limit - limit);
+            typedQuery.setMaxResults(limit);
 
             return typedQuery.getResultList();
 

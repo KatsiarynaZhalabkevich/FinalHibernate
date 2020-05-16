@@ -2,6 +2,7 @@ package by.epam.web.command.impl;
 
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +20,7 @@ public class EditProfileCommand implements Command {
 
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
 
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(USER);

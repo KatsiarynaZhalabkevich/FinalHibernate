@@ -3,6 +3,7 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
@@ -11,6 +12,7 @@ import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,14 +28,15 @@ public class ShowUserTariffsCommand implements Command {
     private final static String KONKR_USER = "userName";
     private final static String ERROR_MESSAGE_TEXT = "Can't get user's tariffs";
     private final static String ERROR_MESSAGE_TEXT2 = "You have no permission for this action! Please, log in! ";
-    @Autowired
+
     private UserService userService;
-    @Autowired
+
     private TarifService tarifService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
-
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        userService = serviceConfig.userService();
+        tarifService = serviceConfig.tarifService();
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);

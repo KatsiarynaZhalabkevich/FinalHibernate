@@ -4,6 +4,7 @@ import by.epam.web.bean.Role;
 import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.TarifService;
@@ -11,6 +12,7 @@ import by.epam.web.service.impl.TarifServiceImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -22,22 +24,24 @@ import java.util.List;
 public class EditTarifCommand implements Command {
     private final static Logger logger = LogManager.getLogger();
     private final static String USER = "user";
-    private final static String TARIFF_ID="tarif_id";
-    private final static String NAME="name";
-    private final static String DESCRIPTION ="description";
+    private final static String TARIFF_ID = "tarif_id";
+    private final static String NAME = "name";
+    private final static String DESCRIPTION = "description";
     private final static String SPEED = "speed";
     private final static String PRICE = "price";
     private final static String DISCOUNT = "discount";
     private final static String EDIT_MESSAGE = "editMessage";
-    private final static String ERROR_MESSAGE="errorMessage";
+    private final static String ERROR_MESSAGE = "errorMessage";
     private final static String TARIFFS = "tarifs";
-    private final static String EDIT_MESSAGE_TEXT_OK="Tariff updated!";
-    private final static String EDIT_MESSAGE_TEXT_NOT="Tariff not updated!";
-    private final static String ERROR_MESSAGE_TEXT="You haven't permission for this action!";
-    @Autowired
- private    TarifService tarifService;
+    private final static String EDIT_MESSAGE_TEXT_OK = "Tariff updated!";
+    private final static String EDIT_MESSAGE_TEXT_NOT = "Tariff not updated!";
+    private final static String ERROR_MESSAGE_TEXT = "You haven't permission for this action!";
+
+    private TarifService tarifService;
+
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        tarifService = serviceConfig.tarifService();
 
         HttpSession session = request.getSession(); //сессию создавать не нужно, тк пользователь уже авторизован
         User admin = (User) session.getAttribute(USER);
@@ -58,7 +62,7 @@ public class EditTarifCommand implements Command {
         tarif.setName(name);
 
 
-        String goToPage=JSPPageName.TARIF_ADMIN_PAGE;
+        String goToPage = JSPPageName.TARIF_ADMIN_PAGE;
         if (Role.ADMIN.equals(admin.getRole())) {
             try {
                 if (tarifService.changeTarif(tarif)) {
@@ -77,6 +81,6 @@ public class EditTarifCommand implements Command {
             goToPage = JSPPageName.ERROR_PAGE;
         }
 
-       return "redirect:/"+goToPage;
+        return "redirect:/" + goToPage;
     }
 }

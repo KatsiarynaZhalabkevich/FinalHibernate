@@ -5,12 +5,14 @@ import by.epam.web.bean.Role;
 import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -32,16 +34,18 @@ public class StatisticCommand implements Command {
     private final static String ERROR_MESSAGE_TEXT2 = "You have no permission for this action! Please, log in! ";
     private final static String TARIFFS = "tarifs";
     private final static String USERS_LIST = "usersList";
-    @Autowired
- private    UserService userService;
-    @Autowired
- private    TarifService tarifService;
-    @Autowired
- private    NoteService noteService;
+
+    private UserService userService;
+
+    private TarifService tarifService;
+
+    private NoteService noteService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
-
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        userService = serviceConfig.userService();
+        tarifService = serviceConfig.tarifService();
+        noteService = serviceConfig.noteService();
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);

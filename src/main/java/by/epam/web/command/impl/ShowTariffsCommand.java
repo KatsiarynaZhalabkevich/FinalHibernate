@@ -4,18 +4,17 @@ import by.epam.web.bean.Role;
 import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.TarifService;
-import by.epam.web.service.impl.TarifServiceImpl;
-import by.epam.web.tag.JSPListBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.springframework.beans.factory.annotation.Autowired;
 
-import javax.servlet.ServletException;
+
+
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+
 import javax.servlet.http.HttpSession;
 import java.io.IOException;
 import java.util.List;
@@ -31,29 +30,34 @@ public class ShowTariffsCommand implements Command {
     private final static String IS_LAST_PAGE = "isLastPage";
     private final static int LIMIT = 3;
 
-    @Autowired
     private TarifService tarifService;
 
-    @Override
-    public String execute(HttpServletRequest request) throws IOException {
 
+    @Override
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        tarifService = serviceConfig.tarifService();
+
+        logger.info("ShowTariffsCommand Level 1");
         List<Tarif> tarifList;
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);
 
         String goToPage = JSPPageName.ERROR_PAGE;
-        logger.info(request.getPathInfo());
-        logger.info(request.getServletPath());
-        logger.info(request.getRequestURL());
 
-        long page;
+
+
         try {
+//надо переделать на запрос сразу в БД
 
-            tarifList = makePageTariff(request);
+            //tarifList = makePageTariff(request);
+            tarifList = tarifService.showAllTarif();
+            request.setAttribute(TARIFFS, tarifList);
+            for(Tarif tarif: tarifList){
+                System.out.println(tarif);
+            }
             if (admin == null || !Role.ADMIN.equals(admin.getRole())) {
-                JSPListBean jspListBean = new JSPListBean(tarifList);
-                session.setAttribute("userbean", jspListBean);
+
                 goToPage = JSPPageName.TARIF_PAGE;
             } else {
                 goToPage = JSPPageName.TARIF_ADMIN_PAGE;
@@ -61,9 +65,10 @@ public class ShowTariffsCommand implements Command {
         } catch (ServiceException e) {
             logger.error(e);
         }
-        return "redirect:/" + goToPage;
-    }
 
+        return goToPage;
+    }
+//изменить метод!!!!
     private List<Tarif> makePageTariff(HttpServletRequest request) throws ServiceException {
 
         List<Tarif> tarifList;
@@ -77,7 +82,8 @@ public class ShowTariffsCommand implements Command {
             page = 1;
             session.setAttribute(PAGE_NUM, page);
         }
-        tarifList = tarifService.showTariffRange((int) page, LIMIT);
+
+        tarifList = tarifService.showTariffRange((int) page-1, LIMIT);
         if (tarifList != null) {
             session.setAttribute(TARIFFS, tarifList);
             if (tarifList.size() < LIMIT) {

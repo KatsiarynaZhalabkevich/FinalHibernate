@@ -3,6 +3,7 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.User;
 
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
@@ -30,11 +31,12 @@ public class UpdateUserCommand implements Command {
     private final static String ERROR_PASSWORD_MESSAGE_TEXT="Passwords are not equals";
     private final static String ERROR_MESSAGE_TEXT="Can't update user's information.";
     private final static String ERROR_MESSAGE_TEXT_NOT_USER="Session is finished. You have no permission for this action. Please, log in!";
-    @Autowired
+
     private UserService userService;
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
 
+        userService = serviceConfig.userService();
         HttpSession session = request.getSession(); //сессию создавать не нужно, тк пользователь уже авторизован
         User user = (User) session.getAttribute(USER);
 

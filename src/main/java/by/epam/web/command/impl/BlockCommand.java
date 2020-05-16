@@ -3,6 +3,7 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
@@ -26,11 +27,13 @@ public class BlockCommand implements Command {
     private final static String BLOCK_MESSAGE_TEXT_OK="User's blocked";
     private final static String BLOCK_MESSAGE_TEXT_NOT="User's didn't block";
 
-    @Autowired
-    UserService userService;
+
+  private   UserService userService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+
+        userService = serviceConfig.userService();
 
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER);

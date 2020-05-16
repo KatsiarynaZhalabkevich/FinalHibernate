@@ -21,8 +21,9 @@ import java.util.List;
 public class TarifServiceImpl implements TarifService {
 
     private final static Logger logger = LogManager.getLogger();
-
+    @Autowired
     private TarifDAO tarifDAO;
+
     private final static TarifDataValidator validator = TarifDataValidator.getInstance();
 
     @Override
@@ -41,6 +42,7 @@ public class TarifServiceImpl implements TarifService {
     public List<Tarif> showTariffRange(int page, int limit) throws ServiceException {
         List<Tarif> tariffs;
         try {
+            logger.info("TARIFF DAO "+tarifDAO);
             tariffs = tarifDAO.getTariffRange(page, limit);
         } catch (DAOException e) {
             logger.error(e);

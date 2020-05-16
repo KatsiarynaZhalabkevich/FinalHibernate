@@ -3,12 +3,14 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -24,14 +26,13 @@ public class ShowUsersCommand implements Command {
     private final static String ERROR_MESSAGE_TEXT = "Can't get data about users. Try later!";
     private final static int LIMIT = 3;
 
-    @Autowired
+
     private UserService userService;
 
 
-
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
-
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        userService = serviceConfig.userService();
         HttpSession session = request.getSession(); //сессию создавать не нужно, тк пользователь уже авторизован
         User user = (User) session.getAttribute(USER);
         List<User> users = new ArrayList<>();
@@ -41,7 +42,7 @@ public class ShowUsersCommand implements Command {
         if (Role.ADMIN.equals(user.getRole())) {
 
             try {
-                users.addAll(userService.getUsersRange(page, LIMIT));
+                users.addAll(userService.getUsersRange(page-1, LIMIT));
                 session.setAttribute("pageNumU", page);
 
             } catch (ServiceException e) {

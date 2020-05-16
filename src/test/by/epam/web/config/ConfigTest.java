@@ -25,7 +25,7 @@ public class ConfigTest {
     @Test
     public void setting(){
         final AnnotationConfigApplicationContext context = new AnnotationConfigApplicationContext();
-        context.register(SettingsConfig.class);
+        context.register(WebConfig.class);
         context.refresh();
         for(String s: context.getBeanDefinitionNames()){
             System.out.println(s);

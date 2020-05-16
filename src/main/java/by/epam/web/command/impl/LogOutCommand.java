@@ -1,6 +1,7 @@
 package by.epam.web.command.impl;
 
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 
 import javax.servlet.RequestDispatcher;
@@ -13,10 +14,10 @@ import java.io.IOException;
 public class LogOutCommand implements Command {
     private final static String USER="user";
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
         HttpSession session = request.getSession();
         session.removeAttribute(USER);
         session.invalidate();
-       return "redirect:/"+JSPPageName.INDEX_PAGE;
+       return JSPPageName.INDEX_PAGE;
     }
 }

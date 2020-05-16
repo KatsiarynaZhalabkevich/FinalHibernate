@@ -10,6 +10,7 @@ import by.epam.web.service.validation.UserDataValidator;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,16 +19,16 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-
 @Service
 public class UserServiceImpl implements UserService {
     private final static Logger logger = LogManager.getLogger();
     private static final UserDataValidator validator = UserDataValidator.getInstance();
+
     @Autowired
+    @Qualifier("userDAO")
     private UserDAO userDao;
 
     /**
-     *
      * @param login
      * @param password
      * @return
@@ -48,7 +49,7 @@ public class UserServiceImpl implements UserService {
             user = userDao.findUserByLogin(login);
             if (PasswordCreater.verifyPassword(password, user.getPassword())) {
                 return user;
-            } else{
+            } else {
                 logger.info("Password is incorrect ");
                 return null;
             }
@@ -63,6 +64,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Один метод на два действия (сохранение нового пользователя и обновление существующего), т.к. алгоритм действий схожий DRY
+     *
      * @param user
      * @return
      * @throws ServiceException
@@ -104,12 +106,12 @@ public class UserServiceImpl implements UserService {
         try {
             if (userDao.isLoginExist(login)) { //если такой логин есть, то это операция update
                 flag = userDao.updateUserInfo(user);
-                logger.info("update name "+flag);
+                logger.info("update name " + flag);
                 if (password != null) {//вызвать изменение пароля
                     String newPas = PasswordCreater.createPassword(password);
                     user.setPassword(newPas);
                     flag = userDao.updatePassword(user);
-                    logger.info("update pass "+flag);
+                    logger.info("update pass " + flag);
                 }
 
             } else {  //если логина нет, то это создание нового пользователя
@@ -126,7 +128,6 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     *
      * @param login
      * @return
      * @throws ServiceException
@@ -150,6 +151,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Метод получения списка всех зарегистрированных пользователей
+     *
      * @return
      * @throws ServiceException
      */
@@ -170,6 +172,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Удаление пользователя по id
+     *
      * @param id
      * @return
      * @throws ServiceException
@@ -190,6 +193,7 @@ public class UserServiceImpl implements UserService {
      * Метод изменения баланса для администратора,
      * т.к. здесь учтена возможность понижения баланса
      * (у пользователя есть другой метод, где можно только повысить баланс )
+     *
      * @param id
      * @param balance
      * @return
@@ -215,6 +219,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * Метод для администратора, чтобы заблокировать или разблокировать пользователя
+     *
      * @param id
      * @param active
      * @return
@@ -236,8 +241,8 @@ public class UserServiceImpl implements UserService {
     public User getUserById(int id) throws ServiceException {
         User user;
         try {
-            user=userDao.findUserById(id);
-        }catch(DAOException e){
+            user = userDao.findUserById(id);
+        } catch (DAOException e) {
             logger.error(e);
             throw new ServiceException(e);
         }
@@ -248,7 +253,7 @@ public class UserServiceImpl implements UserService {
     public List<User> getUsersRange(long page, int limit) throws ServiceException {
         List<User> users;
         try {
-            users = userDao.getUsersRange((int)page, limit);
+            users = userDao.getUsersRange((int) page, limit);
         } catch (DAOException e) {
             logger.error(e);
             throw new ServiceException("problems with dao");

@@ -1,6 +1,6 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix="fmt" %>
-<%@ taglib uri="/WEB-INF/tags.tld" prefix='mytag' %>
+<%--<%@ taglib uri="/WEB-INF/tags.tld" prefix='mytag' %>--%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <!DOCTYPE html>
 <html lang="en">
@@ -118,9 +118,18 @@
             <th>${discount}</th>
             <th></th>
         </tr>
+        <c:forEach var="tarifList" items="${tarifs}">
+            <tr>
+                    <td>${tarifList.id}</td>
+                    <td>${tarifList.name}</td>
+                    <td>${tarifList.description}</td>
+                    <td>${tarifList.speed}</td>
+                    <td>${tarifList.price}</td>
+                    <td>${tarifList.discount}</td>
+            </tr>
 
-        <jsp:useBean id="userbean" class="by.epam.web.tag.JSPListBean" scope="session"/>
-        <mytag:tariff list="${sessionScope.userbean}" num="${sessionScope.userbean.size}"/>
+        </c:forEach>
+
     </table>
 </div>
 

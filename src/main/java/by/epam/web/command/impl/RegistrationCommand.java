@@ -1,6 +1,7 @@
 package by.epam.web.command.impl;
 
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 
 import javax.servlet.ServletException;
@@ -11,7 +12,7 @@ import java.io.IOException;
 
 public class RegistrationCommand implements Command {
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
 
         HttpSession session = request.getSession(true);
 

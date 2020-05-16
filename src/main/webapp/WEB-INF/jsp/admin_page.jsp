@@ -52,18 +52,18 @@
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a href="main" class="navbar-brand">My Telecom</a>
+            <a href="../../index.jsp" class="navbar-brand">My Telecom</a>
         </div>
         <div>
             <ul class="nav navbar-nav">
-                <li><a href="main">${main}</a></li>
+                <li><a href="../../index.jsp">${main}</a></li>
                 <li><form action="controller" method="get">
                     <input type="hidden" name="command" value="show_tarifs">
                     <input type="submit" value="${tarif}" class="btn-link">
                 </form></li>
-                <li><a href="auth_user">${priv}</a></li>
+                <li><a href="auth_user.jsp">${priv}</a></li>
                 <li class="active"><a href="#">${admin} </a></li>
-                <li class="active"><a href="statistic" >${statistic}</a></li>
+                <li class="active"><a href="statistic_admin.jsp" >${statistic}</a></li>
             </ul>
         </div>
 

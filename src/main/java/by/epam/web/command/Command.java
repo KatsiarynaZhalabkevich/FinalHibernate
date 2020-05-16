@@ -1,5 +1,6 @@
 package by.epam.web.command;
 
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.dao.UserDAO;
 
 import javax.servlet.ServletException;
@@ -9,5 +10,5 @@ import java.io.IOException;
 
 public interface Command {
 
-    String execute(HttpServletRequest request) throws IOException;
+    String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException;
 }

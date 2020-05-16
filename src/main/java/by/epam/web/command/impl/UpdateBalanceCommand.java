@@ -2,6 +2,7 @@ package by.epam.web.command.impl;
 
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
@@ -24,13 +25,13 @@ public class UpdateBalanceCommand implements Command {
     private final static String UPD_BALANCE_MESS_NOT = "Can't upd user balance";
     private final static String ERROR_MESSAGE_TEXT = "Can't upd user balance. Please, sign in and try again";
 
-    @Autowired
+
     private UserService userService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
 
-
+        userService = serviceConfig.userService();
         HttpSession session = request.getSession();
         User user = (User) session.getAttribute(USER); //по ключу получаем значение
         String goToPage = JSPPageName.USER_AUTH_PAGE;

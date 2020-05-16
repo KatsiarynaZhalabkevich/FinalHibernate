@@ -1,20 +1,27 @@
 package by.epam.web.command;
 
 import by.epam.web.command.impl.*;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.service.NoteService;
 import by.epam.web.service.TarifService;
 import by.epam.web.service.UserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Import;
 
 import java.util.HashMap;
 import java.util.Map;
 
+@Import(ServiceConfig.class)
 public class CommandProvider {
-
+    private final static Logger logger = LogManager.getLogger();
     private Map<CommandName, Command> commands = new HashMap<>();
 
 
     public CommandProvider() {
+
         commands.put(CommandName.AUTHORIZATION, new AuthorizationCommand());
         commands.put(CommandName.NO_SUCH_COMMAND, new NoSuchCommand());
         commands.put(CommandName.EDIT_PROFILE, new EditProfileCommand());

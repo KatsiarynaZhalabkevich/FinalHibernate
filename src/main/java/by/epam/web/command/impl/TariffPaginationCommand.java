@@ -4,6 +4,7 @@ import by.epam.web.bean.Role;
 import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.TarifService;
@@ -12,6 +13,7 @@ import by.epam.web.tag.JSPListBean;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -29,12 +31,12 @@ public class TariffPaginationCommand implements Command {
     private static final String PAGE_NUM = "pageNum";
     private static final String IS_LAST_PAGE = "isLastPage";
     private static final int LIMIT = 3;
-    @Autowired
+
     private TarifService tarifService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
-
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        tarifService = serviceConfig.tarifService();
         List<Tarif> tarifList = null;
 
         HttpSession session = request.getSession(true);
@@ -51,7 +53,7 @@ public class TariffPaginationCommand implements Command {
         }
 
         try {
-            tarifList = tarifService.showTariffRange((int) page, LIMIT);
+            tarifList = tarifService.showTariffRange((int) page-1, LIMIT);
         } catch (ServiceException e) {
             logger.error(e);
         }

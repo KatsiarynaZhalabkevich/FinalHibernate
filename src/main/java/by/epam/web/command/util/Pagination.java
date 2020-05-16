@@ -4,6 +4,7 @@ import by.epam.web.bean.Tarif;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.TarifService;
 import by.epam.web.service.impl.TarifServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -13,12 +14,15 @@ public class Pagination {
     private final static String USER = "user";
     private final static String TARIFFS = "tarifs";
     private final static String ERROR_MESSAGE = "errorMessage";
-    private final static String ERROR_MESSAGE_TEXT ="Can't get information about tariffs. Please, try later";
-    private final static String PAGE_NUM ="pageNum";
+    private final static String ERROR_MESSAGE_TEXT = "Can't get information about tariffs. Please, try later";
+    private final static String PAGE_NUM = "pageNum";
     private final static String IS_LAST_PAGE = "isLastPage";
     private final static int LIMIT = 3;
 
+
+
     public static void makePage(HttpServletRequest request) throws ServiceException {
+
         TarifService tarifService = new TarifServiceImpl();
         List<Tarif> tarifList;
         HttpSession session = request.getSession();
@@ -31,7 +35,7 @@ public class Pagination {
             page = 1;
             session.setAttribute(PAGE_NUM, page);
         }
-        tarifList = tarifService.showTariffRange((int) page, LIMIT);
+        tarifList = tarifService.showTariffRange((int) page-1, LIMIT);
         if (tarifList != null) {
             session.setAttribute(TARIFFS, tarifList);
             if (tarifList.size() < LIMIT) {
@@ -39,7 +43,7 @@ public class Pagination {
             } else {
                 session.setAttribute(IS_LAST_PAGE, false);
             }
-        }else {
+        } else {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
         }
 

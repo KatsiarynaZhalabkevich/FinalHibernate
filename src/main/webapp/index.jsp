@@ -1,8 +1,6 @@
-<%@ page contentType="text/html;charset=UTF-8" language="java"
-         %>
+<%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/fmt" prefix='fmt' %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-
 
 
 <!DOCTYPE html>
@@ -77,13 +75,13 @@
             <ul class="nav navbar-nav">
                 <li class="active"><a href="#">${main}</a></li>
                 <c:if test="${user==null}">
-                    <li><a href="registration">${registr}</a></li>
+                    <li><a href="page/registr.jsp">${registr}</a></li>
                 </c:if>
                 <c:if test="${user!=null}">
-                    <li><a href="auth_user">${priv}</a></li>
+                    <li><a href="WEB-INF/jsp/auth_user.jsp">${priv}</a></li>
                 </c:if>
                 <c:if test="${user.role eq 'ADMIN'}">
-                    <li><a href="admin">${admin}</a></li>
+                    <li><a href="WEB-INF/jsp/admin.jsp">${admin}</a></li>
                 </c:if>
             </ul>
             <c:if test="${user!=null}">
@@ -97,6 +95,7 @@
 
             <c:if test="${user==null}">
                 <form class="navbar-form navbar-right" role="form" action="controller" method="post"
+
                       id="form" onsubmit="return valid(document.getElementById('form'))">
                     <input type="hidden" name="command" value="authorization"/>
                     <div class="form-group">

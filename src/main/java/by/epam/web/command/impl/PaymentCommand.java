@@ -4,6 +4,7 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
@@ -12,6 +13,7 @@ import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -25,18 +27,20 @@ public class PaymentCommand implements Command {
     private final static String ERROR_MESSAGE = "errorMessage";
     private final static String PAYMENT_MESSAGE = "paymentMessage";
     private final static String USERS_LIST = "usersList";
-    private final static String PAYMENT_MESSAGE_TEXT="Payment OK";
-    private final static String ERROR_MESSAGE_TEXT_PAY="Can't get users for payment!";
-    private final static String ERROR_MESSAGE_TEXT= "Session is not valid!";
+    private final static String PAYMENT_MESSAGE_TEXT = "Payment OK";
+    private final static String ERROR_MESSAGE_TEXT_PAY = "Can't get users for payment!";
+    private final static String ERROR_MESSAGE_TEXT = "Session is not valid!";
 
-    @Autowired
-  private   UserService userService;
-    @Autowired
-  private   TarifService tarifService;
+
+    private UserService userService;
+
+    private TarifService tarifService;
+
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
 
-
+        userService = serviceConfig.userService();
+        tarifService = serviceConfig.tarifService();
 
         List<UserTarif> userTariffs = new ArrayList<>();
         HttpSession session = request.getSession();
@@ -91,13 +95,13 @@ public class PaymentCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
             goToPage = JSPPageName.ERROR_PAGE;
         }
-        return "redirect:/"+goToPage;
+        return "redirect:/" + goToPage;
     }
 
     private double paymentToWithdraw(List<UserTarif> userTariffs) {
         double payment = 0;
         for (UserTarif t : userTariffs) {
-            payment -= t.getTarif().getPrice()- t.getTarif().getPrice() * t.getTarif().getDiscount() * 0.01;
+            payment -= t.getTarif().getPrice() - t.getTarif().getPrice() * t.getTarif().getDiscount() * 0.01;
 
         }
         return payment;

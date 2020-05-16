@@ -18,7 +18,7 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.RollbackException;
 import java.util.List;
 
-@Repository
+//@Repository
 public class HibernateNoteDAO implements NoteDAO {
     @PersistenceContext
     private EntityManager em;
@@ -27,12 +27,9 @@ public class HibernateNoteDAO implements NoteDAO {
     public boolean addNote(Note note) throws DAOException {
 
         try {
-
             em.persist(note);
-
             return true;
         } catch (RollbackException e) {
-
             throw new DAOException(e);
         }
 

@@ -2,7 +2,7 @@
 <Configuration status="info">
     <Properties>
         <Property name="LOG_DIR">logs</Property>
-        <Property name="pattern_console">%d{HH:mm:ss }%-3level %logger{1} - %msg%n
+        <Property name="pattern_console">%d{HH:mm:ss }%-5level %logger{1} - %msg%n
         </Property>
     </Properties>
 
@@ -10,7 +10,7 @@
         <RollingFile name="fileLogger" fileName="${basePath}/app-info.log"
                      filePattern="${basePath}/app-info-%d{yyyy-MM-dd}.log">
             <PatternLayout>
-                <pattern>[%-3level]
+                <pattern>[%-5level]
                     %d{yyyy-MM-dd HH:mm:ss.SSS} [%t] %c{1} - %msg%n
                 </pattern>
             </PatternLayout>

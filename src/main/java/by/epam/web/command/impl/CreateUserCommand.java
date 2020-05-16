@@ -3,6 +3,7 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.TarifService;
@@ -10,6 +11,7 @@ import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -43,13 +45,17 @@ public class CreateUserCommand implements Command {
      * @throws IOException
      * @throws ServletException
      */
-    @Autowired
+
     private UserService userService;
-    @Autowired
+
     private TarifService tarifService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+
+        userService = serviceConfig.userService();
+        tarifService = serviceConfig.tarifService();
+
         HttpSession session = request.getSession();
         String name = request.getParameter(NAME);
         String surname = request.getParameter(SURNAME);

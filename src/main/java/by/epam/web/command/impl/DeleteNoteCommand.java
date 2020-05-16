@@ -3,6 +3,7 @@ package by.epam.web.command.impl;
 
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.NoteService;
@@ -11,6 +12,7 @@ import by.epam.web.service.TarifService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -37,14 +39,15 @@ public class DeleteNoteCommand implements Command {
      * @throws IOException
      * @throws ServletException
      */
-    @Autowired
+
     NoteService noteService;
-    @Autowired
+
     TarifService tarifService;
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
-
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        noteService = serviceConfig.noteService();
+        tarifService = serviceConfig.tarifService();
         HttpSession session = request.getSession(); //только зарегистрированный пользователь может удалить себе тариф
         User user = (User) session.getAttribute(USER);
         int noteId = Integer.parseInt(request.getParameter(NOTE_ID));

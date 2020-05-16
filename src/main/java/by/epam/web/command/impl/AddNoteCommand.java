@@ -4,6 +4,7 @@ import by.epam.web.bean.Note;
 import by.epam.web.bean.Tarif;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.NoteService;
@@ -34,31 +35,15 @@ public class AddNoteCommand implements Command {
      * @throws IOException
      * @throws ServletException
      */
-    @Autowired
+
     private NoteService noteService;
-    @Autowired
     private TarifService tarifService;
 
 
-    public NoteService getNoteService() {
-        return noteService;
-    }
-
-    public void setNoteService(NoteService noteService) {
-        this.noteService = noteService;
-    }
-
-    public TarifService getTarifService() {
-        return tarifService;
-    }
-
-    public void setTarifService(TarifService tarifService) {
-        this.tarifService = tarifService;
-    }
-
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
-
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        noteService = serviceConfig.noteService();
+        tarifService = serviceConfig.tarifService();
 
         HttpSession session = request.getSession(); //только зарегистрированный пользователь может добавить себе тариф
         User user = (User) session.getAttribute(USER);

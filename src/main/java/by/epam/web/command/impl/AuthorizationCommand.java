@@ -4,6 +4,7 @@ import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
 import by.epam.web.command.util.Pagination;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.dto.UserTarif;
 import by.epam.web.service.ServiceException;
@@ -12,6 +13,8 @@ import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Controller;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -39,25 +42,27 @@ public class AuthorizationCommand implements Command {
      * и всех тарифов для отображения на странице пользователя
      *
      * @param request
-     *
      * @throws IOException
      * @throws ServletException
      */
-    @Autowired
-    UserService userService;
-    @Autowired
-    TarifService tarifService;
+
+  private  UserService userService;
+
+   private TarifService tarifService;
 
 
     @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+
+        userService = serviceConfig.userService();
+        tarifService = serviceConfig.tarifService();
 
         String login;
         String password;
         login = request.getParameter(LOGIN);
         password = request.getParameter(PASSWORD);
 
-
+        logger.info(login + "    " + password);
 
         HttpSession session = request.getSession(true);
 
@@ -66,6 +71,7 @@ public class AuthorizationCommand implements Command {
 
         try {
             user = userService.authorization(login, password);
+            logger.info("after author command");
         } catch (ServiceException e) {
             logger.error(e);
 
@@ -77,7 +83,7 @@ public class AuthorizationCommand implements Command {
             try {
                 List<UserTarif> tariffs = tarifService.showTarifsByUserId(user.getId()); //все тарифы какие есть
                 session.setAttribute(USER_TARIFFS, tariffs);
-                Pagination.makePage(request); //все работает, но может что-то изменить?
+                //   Pagination.makePage(request); //все работает, но может что-то изменить?
             } catch (ServiceException e) {
                 logger.error(e);
                 session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
@@ -96,7 +102,9 @@ public class AuthorizationCommand implements Command {
             goToPage = JSPPageName.INDEX_PAGE;
 
         }
-        //response.sendRedirect(goToPage);
+
+        logger.info("Ready to go");
+        logger.info(goToPage);
         return goToPage;
 
     }

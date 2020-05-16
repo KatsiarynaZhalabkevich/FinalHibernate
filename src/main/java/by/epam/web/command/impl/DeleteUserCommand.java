@@ -3,12 +3,14 @@ package by.epam.web.command.impl;
 import by.epam.web.bean.Role;
 import by.epam.web.bean.User;
 import by.epam.web.command.Command;
+import by.epam.web.config.ServiceConfig;
 import by.epam.web.controller.JSPPageName;
 import by.epam.web.service.ServiceException;
 import by.epam.web.service.UserService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
@@ -26,11 +28,11 @@ public class DeleteUserCommand implements Command {
     private final static String DEL_MESSAGE_NOT = "User not deleted!";
     private final static String ERROR_MESSAGE_TEXT = "You have no permission for this action! Please, log in! ";
 
-   @Autowired
-   private UserService userService;
-    @Override
-    public String execute(HttpServletRequest request) throws IOException {
+    private UserService userService;
 
+    @Override
+    public String execute(HttpServletRequest request, ServiceConfig serviceConfig) throws IOException {
+        userService = serviceConfig.userService();
         HttpSession session = request.getSession();
         User admin = (User) session.getAttribute(USER); //admin
         int id = Integer.parseInt(request.getParameter(ID));
@@ -58,7 +60,7 @@ public class DeleteUserCommand implements Command {
                     goToPage = JSPPageName.INDEX_PAGE;
                 } else {
                     session.setAttribute(ERROR_MESSAGE, DEL_MESSAGE_NOT);
-                    goToPage=JSPPageName.ERROR_PAGE;
+                    goToPage = JSPPageName.ERROR_PAGE;
                 }
             } catch (ServiceException e) {
                 logger.error(e);
@@ -67,7 +69,7 @@ public class DeleteUserCommand implements Command {
             session.setAttribute(ERROR_MESSAGE, ERROR_MESSAGE_TEXT);
             goToPage = JSPPageName.ERROR_PAGE;
         }
-        return "redirect:/"+goToPage;
+        return "redirect:/" + goToPage;
 
     }
 }

@@ -6,6 +6,7 @@ import by.epam.web.dao.UserDAO;
 import by.epam.web.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -73,21 +74,22 @@ public class SpringDataUserDAO implements UserDAO {
 
     @Override
     public boolean updatePassword(User user) throws DAOException {
-        User updatedUser = userRepository.updatePassword(user.getPassword(), user.getId());
-        return updatedUser != null;
+        int count = userRepository.updatePassword(user.getPassword(), user.getId());
+        System.out.println(count);
+        return count==1;
     }
 
     @Override
     public boolean updateIsActive(boolean active, int id) throws DAOException {
-        User updatedUser = userRepository.updateIsActive(active, id);
-        return active==updatedUser.isActive();
+       int count = userRepository.updateIsActive(active, id);
+        return count==1;
 
     }
 
     @Override
     public boolean updateUserBalanceById(int id, double balance) throws DAOException {
-        User updatedUser = userRepository.updateUserBalanceById(id, balance);
-        return updatedUser.getBalance()==balance;
+        int count = userRepository.updateUserBalanceById(id, balance);
+        return count==1;
     }
 
     @Override
@@ -110,9 +112,10 @@ public class SpringDataUserDAO implements UserDAO {
         return userRepository.findUsersByPhone(phone);
     }
 
-    @Override //пересмотреть видео
+    @Override
     public List<User> getUsersRange(int page, int limit) throws DAOException {
+        List<User> users = userRepository.findAll(PageRequest.of(page, limit)).getContent();
 
-        return null;
+        return users;
     }
 }
